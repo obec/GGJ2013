@@ -47,7 +47,6 @@ public class MainGame implements ApplicationListener {
 		region = new TextureRegion(texture, 0, 0, 512, 512);
 
 		
-		camera = new OrthographicCamera(1, h/w);
 		batch = new SpriteBatch();		
 		gameAudio = new Audio();
 
@@ -88,8 +87,8 @@ public class MainGame implements ApplicationListener {
 		//Texture txt = _background.GetBackgroundTxt();
 		//batch.draw(_background.GetBackgroundTxt(), 800/2, 20);
 
-		gameAudio.heart_beat.play();
-		sprite.draw(batch);
+		//gameAudio.heart_beat.play();
+		//sprite.draw(batch);
 
 		batch.end();
 		
