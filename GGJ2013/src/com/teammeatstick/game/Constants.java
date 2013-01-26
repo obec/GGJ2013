@@ -14,7 +14,8 @@ public class Constants {
 	public static final String MENU_MUSIC = "";
 	public static final String NANO_VICTORY = "";
 	public static final String VIRUS_VICTORY = "";
-	public static final String MENU_SELECTION = "";
+	public static final String MENU_SELECTION = "sounds/effects/menu_select.mp3";
+	public static final String MENU_MOVE = "sounds/effects/menu_move.mp3";
 	//what else? die? victory? menu selections?
 
 }
