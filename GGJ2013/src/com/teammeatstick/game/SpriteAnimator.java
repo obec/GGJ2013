@@ -20,6 +20,9 @@ public class SpriteAnimator implements ApplicationListener {
         TextureRegion                   currentFrame;           // #7
         
         float stateTime;                                        // #8
+        
+        int xPos = 0;
+        int yPos = 0;
 
         @Override
         public void create() {
@@ -36,6 +39,7 @@ FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);                                
                 walkAnimation = new Animation(0.025f, walkFrames);              // #11
                 spriteBatch = new SpriteBatch();                                // #12
                 stateTime = 0f;                                                 // #13
+                currentFrame = walkAnimation.getKeyFrame(stateTime, true); 		// prime first frame
         }
 
         @Override
@@ -44,7 +48,7 @@ FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);                                
                 stateTime += Gdx.graphics.getDeltaTime();                       // #15
                 currentFrame = walkAnimation.getKeyFrame(stateTime, true);      // #16
                 spriteBatch.begin();
-                spriteBatch.draw(currentFrame, 50, 50);                         // #17
+                spriteBatch.draw(currentFrame, xPos, yPos);                         // #17
                 spriteBatch.end();
         }
 
@@ -70,5 +74,11 @@ FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);                                
 		public void dispose() {
 			// TODO Auto-generated method stub
 			
+		}
+		
+		public void updatePosition(int x, int y)
+		{
+			xPos = x - (currentFrame.getRegionWidth()/2);
+			yPos = y - (currentFrame.getRegionHeight()/2);
 		}
 }

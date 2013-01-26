@@ -180,6 +180,8 @@ public class MainGame implements ApplicationListener {
 		batch.draw(_background.GetBackground(), 0, 0);
 		batch.end();
 		
+		Vector2 spritePos = body.getWorldCenter();
+		_spriteAnimator.updatePosition((int)spritePos.x, (int)spritePos.y);
 		_spriteAnimator.render();
 		
 		stage.act(Gdx.graphics.getDeltaTime());
