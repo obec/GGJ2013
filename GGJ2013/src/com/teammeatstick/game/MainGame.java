@@ -1,13 +1,22 @@
 package com.teammeatstick.game;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import sun.applet.Main;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -35,9 +44,6 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
 
 import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 
-import com.teammeatstick.game.Audio;
-
-
 public class MainGame implements ApplicationListener {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
@@ -64,8 +70,22 @@ public class MainGame implements ApplicationListener {
     static final float BOX_WORLD_TO=100f;
     private Body body;
 	
+	private static final int        FRAME_COLS = 2;         // #1
+    private static final int        FRAME_ROWS = 2;         // #2
+    
+    Animation                       walkAnimation;          // #3
+    Texture                         walkSheet;              // #4
+    TextureRegion[]                 walkFrames;             // #5
+    SpriteBatch                     spriteBatch;            // #6
+    TextureRegion                   currentFrame;           // #7
+    
+    float stateTime;                                        // #8
+	private SpriteAnimator _spriteAnimator;
+    
 	@Override
 	public void create() {
+		_spriteAnimator = new SpriteAnimator();
+		_spriteAnimator.create();
 		GdxNativesLoader.load();
 		world = new World(new Vector2(0, 0), true);  
 		float w = Gdx.graphics.getWidth();
@@ -90,7 +110,6 @@ public class MainGame implements ApplicationListener {
 		texture = new Texture(Gdx.files.internal("data/libgdx.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
-		
 		texture2 = new Texture(Gdx.files.internal("textures/backgrounds/TestBackground6.png"));
 		region2 = new TextureRegion(texture2, 0, texture2.getHeight() - Gdx.graphics.getHeight() , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
@@ -153,13 +172,14 @@ public class MainGame implements ApplicationListener {
 
 	@Override
 	public void render() {		
-		Gdx.gl.glClearColor(1, 0, 1, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClearColor(1, 0, 1, 1);		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		//sprite.draw(batch);
 		batch.draw(_background.GetBackground(), 0, 0);
 		batch.end();
+		
+		_spriteAnimator.render();
 		
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
