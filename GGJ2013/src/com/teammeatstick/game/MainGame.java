@@ -52,10 +52,6 @@ import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 public class MainGame implements ApplicationListener {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	private Texture texture;
-	private Texture texture2;
-	TextureRegion region;
-	private TextureRegion region2;
 	private Sprite sprite;
 	private Audio gameAudio;
 	
@@ -109,24 +105,9 @@ public class MainGame implements ApplicationListener {
 		//Let's try to create a player!
 		Player player1 = new Player(1, new Vector2(50,50), new Vector2(75,75));
 		
-		//texture = new Texture(Gdx.files.internal("data/libgdx.png"));
-		texture = new Texture(Gdx.files.internal("textures/backgrounds/TestTexture.png"));
-		//texture = new Texture(Gdx.files.internal("textures/backgrounds/TestBackground.png"));
-		//texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		//Animator
-		region = new TextureRegion(texture, 0, 0, 10, 10);
-
-		
 		batch = new SpriteBatch();		
 		gameAudio = new Audio();
-		//gameAudio.create();
-
-		texture = new Texture(Gdx.files.internal("data/libgdx.png"));
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
-		texture2 = new Texture(Gdx.files.internal("textures/backgrounds/TestBackground6.png"));
-		region2 = new TextureRegion(texture2, 0, texture2.getHeight() - Gdx.graphics.getHeight() , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		
+		//gameAudio.create();		
 
 		stage = new Stage(20, 400, true);
 		Table table = new Table();
@@ -152,7 +133,6 @@ public class MainGame implements ApplicationListener {
 		//sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
 		
 		_background = new Background();
-		_background.LoadBackground();
 		
 		//Ground body  
         BodyDef groundBodyDef =new BodyDef();  
@@ -183,8 +163,7 @@ public class MainGame implements ApplicationListener {
 	@Override
 	public void dispose() {
 		batch.dispose();
-		texture.dispose();
-		//_background.dispose();
+		_background.dispose();
 	}
 
 	@Override
@@ -233,9 +212,6 @@ public class MainGame implements ApplicationListener {
 		//System.out.println("C: " + camera.position);
 		//camera.update();
 		
-		// Updates
-		//_background.UpdateBackground(velocity);
-		
 		_background.Draw(batch);
 		
 		
@@ -249,13 +225,9 @@ public class MainGame implements ApplicationListener {
 		
 		debugRenderer.render(world, camera.combined);
 		//batch.draw(texture2, 0, 0);
-		//Texture txt = _background.GetBackgroundTxt();
 		//batch.draw(_background.GetBackgroundTxt(), 800/2, 20);
 
 		//sprite.draw(batch);
-		
-		// Updates
-		//_background.UpdateBackground();
 		
 		if(Gdx.input.justTouched()){
 			//gameAudio.sound.play();

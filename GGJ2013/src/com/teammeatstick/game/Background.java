@@ -16,18 +16,16 @@ import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 
 public class Background {
 	private Texture _background;
-	private TextureRegion _backgroundRegion;
 	private Texture[] _backgroundTextures;
 	private TextureAtlas _levelAtlas;
-	private AtlasRegion _levelRegion;
-	private float _backgroundSpeed;
-	private float _lastX;
+	
+	Background(){
+		LoadBackground();
+	}
 	
 	public void LoadBackground()
 	{
 		_levelAtlas = new TextureAtlas(Gdx.files.internal("textures/backgrounds/testLevel/testLevelPack.atlas"));
-		_levelRegion = _levelAtlas.findRegion("TestLevelPart1");
-		_background = new Texture(Gdx.files.internal("textures/backgrounds/TestBackground6.png"));
 	
 		Array<AtlasRegion> regions = _levelAtlas.getRegions();
 		_backgroundTextures = new Texture[regions.size];
@@ -35,35 +33,6 @@ public class Background {
 		for(int atlas = 0; atlas < regions.size; atlas++)
 		{
 			_backgroundTextures[atlas] = regions.get(atlas).getTexture();
-		}
-		
-		
-		_backgroundRegion = new TextureRegion(_background, 0, _background.getHeight() - Gdx.graphics.getHeight() , /*Gdx.graphics.getWidth()*/4096, Gdx.graphics.getHeight());
-		_backgroundSpeed = 0.5f;
-	}
-	
-	public void UpdateBackground(Vector2 playerPos)
-	{
-		ScrollBackground(playerPos);
-	}
-	
-	public void ScrollBackground(Vector2 playerPos)
-	{		
-		//_backgroundRegion.scroll(_backgroundSpeed * 0.1f * Gdx.graphics.getDeltaTime(), 0.0f);
-		
-		//_backgroundRegion.scroll((playerPos.x - _lastX) * 0.05f * Gdx.graphics.getDeltaTime(), 0);
-		//_lastX = playerPos.x;
-		//_backgroundRegion(playerPos.x);
-		
-		if(Gdx.input.isKeyPressed(Keys.RIGHT) &&
-		   _backgroundRegion.getRegionX() < (_background.getWidth() - _backgroundRegion.getRegionWidth()))
-		{
-			_backgroundRegion.scroll(0.5f * Gdx.graphics.getDeltaTime(), 0);
-		}
-		if(Gdx.input.isKeyPressed(Keys.LEFT) &&
-		   _backgroundRegion.getRegionX() > 0)
-		{
-			_backgroundRegion.scroll(-0.5f * Gdx.graphics.getDeltaTime(), 0);
 		}
 	}
 	
@@ -91,7 +60,10 @@ public class Background {
 	
 	public void dispose()
 	{
-		//_background.dispose();
+		for(int texture=0; texture<_backgroundTextures.length; texture++)
+		{
+			_backgroundTextures[texture].dispose();
+		}
 	}
 	
 }
