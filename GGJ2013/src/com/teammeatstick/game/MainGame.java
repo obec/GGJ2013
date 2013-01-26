@@ -12,6 +12,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.Animator;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -21,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.GdxNativesLoader;
 
 import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 
@@ -44,9 +55,19 @@ public class MainGame implements ApplicationListener {
 	
 	private Stage stage;
 	
+    World world;
+    Box2DDebugRenderer debugRenderer;  
+    static final float BOX_STEP=1/60f;  
+    static final int BOX_VELOCITY_ITERATIONS=6;  
+    static final int BOX_POSITION_ITERATIONS=2;  
+    static final float WORLD_TO_BOX=0.01f;  
+    static final float BOX_WORLD_TO=100f;
+    private Body body;
 	
 	@Override
-	public void create() {		
+	public void create() {
+		GdxNativesLoader.load();
+		world = new World(new Vector2(0, 0), true);  
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
 
@@ -58,7 +79,7 @@ public class MainGame implements ApplicationListener {
 		texture = new Texture(Gdx.files.internal("textures/backgrounds/TestTexture.png"));
 		//texture = new Texture(Gdx.files.internal("textures/backgrounds/TestBackground.png"));
 		//texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		
+		//Animator
 		region = new TextureRegion(texture, 0, 0, 10, 10);
 
 		
@@ -99,6 +120,28 @@ public class MainGame implements ApplicationListener {
 		
 		_background = new Background();
 		_background.LoadBackground();
+		
+		//Ground body  
+        BodyDef groundBodyDef =new BodyDef();  
+        groundBodyDef.position.set(new Vector2(0, 10));  
+        Body groundBody = world.createBody(groundBodyDef);  
+        PolygonShape groundBox = new PolygonShape();  
+        groundBox.setAsBox((camera.viewportWidth) * 2, 10.0f);  
+        groundBody.createFixture(groundBox, 0.0f);  
+        //Dynamic Body  
+        BodyDef bodyDef = new BodyDef();  
+        bodyDef.type = BodyType.DynamicBody;  
+        bodyDef.position.set(50.0f, 400.0f);//camera.viewportWidth / 2, camera.viewportHeight / 2);  
+        body = world.createBody(bodyDef);  
+        CircleShape dynamicCircle = new CircleShape();  
+        dynamicCircle.setRadius(50f);  
+        FixtureDef fixtureDef = new FixtureDef();  
+        fixtureDef.shape = dynamicCircle;  
+        fixtureDef.density = 0.5f;  
+        fixtureDef.friction = 0.0f;  
+        fixtureDef.restitution = 1;  
+        body.createFixture(fixtureDef);  
+        debugRenderer = new Box2DDebugRenderer();
 	}
 
 	@Override
@@ -122,6 +165,8 @@ public class MainGame implements ApplicationListener {
 		stage.draw();
 		Table.drawDebug(stage);
 		
+		
+		debugRenderer.render(world, camera.combined);
 		//batch.draw(texture2, 0, 0);
 		//Texture txt = _background.GetBackgroundTxt();
 		//batch.draw(_background.GetBackgroundTxt(), 800/2, 20);
@@ -135,6 +180,28 @@ public class MainGame implements ApplicationListener {
 		
 		// Updates
 		_background.UpdateBackground();
+		
+		
+		if(Gdx.input.isKeyPressed(Keys.W))
+		{
+			//Gdx.app.log("Physics", "Applying force UP");
+			body.applyLinearImpulse(new Vector2(0, 5000), body.getWorldCenter());
+		}
+		if(Gdx.input.isKeyPressed(Keys.A))
+		{
+			body.applyLinearImpulse(new Vector2(-5000, 0), body.getWorldCenter());
+		}
+		if(Gdx.input.isKeyPressed(Keys.S))
+		{
+			body.applyLinearImpulse(new Vector2(0, -5000), body.getWorldCenter());
+		}
+		if(Gdx.input.isKeyPressed(Keys.D))
+		{
+			body.applyLinearImpulse(new Vector2(5000, 0), body.getWorldCenter());
+		}
+		
+		// Physics
+		world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS); 
 	}
 
 	@Override
