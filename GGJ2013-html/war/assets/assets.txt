@@ -1,0 +1,11 @@
+d:
+d:data
+i:data/libgdx.png
+d:sounds
+d:sounds/effects
+t:sounds/effects/placeholder.txt
+d:sounds/music
+a:sounds/music/Infarct.wav
+d:textures
+d:textures/backgrounds
+i:textures/backgrounds/TestBackground.png
