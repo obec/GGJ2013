@@ -49,6 +49,7 @@ public class MainGame implements ApplicationListener {
 		
 		batch = new SpriteBatch();		
 		gameAudio = new Audio();
+		gameAudio.create();
 
 		texture = new Texture(Gdx.files.internal("data/libgdx.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -87,10 +88,14 @@ public class MainGame implements ApplicationListener {
 		//Texture txt = _background.GetBackgroundTxt();
 		//batch.draw(_background.GetBackgroundTxt(), 800/2, 20);
 
-		//gameAudio.heart_beat.play();
 		//sprite.draw(batch);
 
 		batch.end();
+		
+		if(Gdx.input.justTouched()){
+			gameAudio.sound.play();
+			System.out.println("playing sound?");
+		}
 		
 		if(Gdx.input.isKeyPressed(Keys.RIGHT) &&
 		   region2.getRegionX() < (texture2.getWidth() - region2.getRegionWidth()))
