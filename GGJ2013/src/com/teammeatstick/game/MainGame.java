@@ -71,7 +71,7 @@ public class MainGame implements ApplicationListener {
 
 		
 		texture2 = new Texture(Gdx.files.internal("textures/backgrounds/TestBackground6.png"));
-		region2 = new TextureRegion(texture2, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		region2 = new TextureRegion(texture2, 0, texture2.getHeight() - Gdx.graphics.getHeight() , Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 
 		stage = new Stage(20, 400, true);
@@ -127,8 +127,6 @@ public class MainGame implements ApplicationListener {
 		//batch.draw(_background.GetBackgroundTxt(), 800/2, 20);
 
 		//sprite.draw(batch);
-
-		
 		
 		if(Gdx.input.justTouched()){
 			gameAudio.sound.play();
@@ -139,20 +137,11 @@ public class MainGame implements ApplicationListener {
 		   region2.getRegionX() < (texture2.getWidth() - region2.getRegionWidth()))
 		{
 			region2.scroll(1 * Gdx.graphics.getDeltaTime(), 0);
-			
-			//if(region2.getRegionX() > texture.getWidth() - region2.getRegionWidth())
-			//{
-			//	region2.setRegionX(texture.getWidth() - region2.getRegionWidth());
-			//}
 		}
 		if(Gdx.input.isKeyPressed(Keys.LEFT) &&
 		   region2.getRegionX() > 0)
 		{
 			region2.scroll(-1 * Gdx.graphics.getDeltaTime(), 0);
-			//if(region2.getRegionX() < 0)
-			//{
-			//	region2.setRegionX(0);
-			//}
 		}
 	}
 
