@@ -10,7 +10,11 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
+
+import com.teammeatstick.game.Audio;
+
 
 public class MainGame implements ApplicationListener {
 	private OrthographicCamera camera;
@@ -20,6 +24,7 @@ public class MainGame implements ApplicationListener {
 	TextureRegion region;
 	private TextureRegion region2;
 	private Sprite sprite;
+	private Audio gameAudio;
 	
 	private Background _background;
 	
@@ -28,6 +33,7 @@ public class MainGame implements ApplicationListener {
 	public void create() {		
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
+
 
 		camera = new OrthographicCamera(); //(w, h);//1, h/w);
 		camera.setToOrtho(false, w, h);
@@ -39,6 +45,15 @@ public class MainGame implements ApplicationListener {
 		//texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		region = new TextureRegion(texture, 0, 0, 512, 512);
+
+		
+		camera = new OrthographicCamera(1, h/w);
+		batch = new SpriteBatch();		
+		gameAudio = new Audio();
+
+		texture = new Texture(Gdx.files.internal("data/libgdx.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
 		
 		texture2 = new Texture(Gdx.files.internal("textures/backgrounds/TestBackground6.png"));
 		region2 = new TextureRegion(texture2, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -65,7 +80,6 @@ public class MainGame implements ApplicationListener {
 	public void render() {		
 		Gdx.gl.glClearColor(1, 0, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		//sprite.draw(batch);
@@ -73,6 +87,10 @@ public class MainGame implements ApplicationListener {
 		//batch.draw(texture2, 0, 0);
 		//Texture txt = _background.GetBackgroundTxt();
 		//batch.draw(_background.GetBackgroundTxt(), 800/2, 20);
+
+		gameAudio.heart_beat.play();
+		sprite.draw(batch);
+
 		batch.end();
 		
 		if(Gdx.input.isKeyPressed(Keys.RIGHT) &&
