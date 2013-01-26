@@ -40,7 +40,7 @@ FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);                                
 
         @Override
         public void render() {
-                Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);                                            // #14
+                //Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);                                            // #14
                 stateTime += Gdx.graphics.getDeltaTime();                       // #15
                 currentFrame = walkAnimation.getKeyFrame(stateTime, true);      // #16
                 spriteBatch.begin();
