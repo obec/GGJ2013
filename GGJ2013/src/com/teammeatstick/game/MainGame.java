@@ -3,13 +3,24 @@ package com.teammeatstick.game;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 
@@ -28,12 +39,16 @@ public class MainGame implements ApplicationListener {
 	
 	private Background _background;
 	
+	private TextButton button;
+	private Skin skin;
+	
+	private Stage stage;
+	
 	
 	@Override
 	public void create() {		
 		float w = Gdx.graphics.getWidth();
 		float h = Gdx.graphics.getHeight();
-
 
 		camera = new OrthographicCamera(); //(w, h);//1, h/w);
 		camera.setToOrtho(false, w, h);
@@ -44,11 +59,12 @@ public class MainGame implements ApplicationListener {
 		//texture = new Texture(Gdx.files.internal("textures/backgrounds/TestBackground.png"));
 		//texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
-		region = new TextureRegion(texture, 0, 0, 512, 512);
+		region = new TextureRegion(texture, 0, 0, 10, 10);
 
 		
 		batch = new SpriteBatch();		
 		gameAudio = new Audio();
+		//gameAudio.create();
 
 		texture = new Texture(Gdx.files.internal("data/libgdx.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
@@ -57,7 +73,24 @@ public class MainGame implements ApplicationListener {
 		texture2 = new Texture(Gdx.files.internal("textures/backgrounds/TestBackground6.png"));
 		region2 = new TextureRegion(texture2, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
+
+		stage = new Stage(20, 400, true);
+		Table table = new Table();
+		table.setY(200);
+		table.setX(50);
+		TextButtonStyle style = new TextButtonStyle();
+		style.font = new BitmapFont();
+		style.fontColor = Color.WHITE;
 		
+		skin = new Skin();
+		skin.add("logo", new Texture(Gdx.files.internal("textures/gui/TestButton.png")));
+		button = new TextButton("ClickMe", style);
+		
+		table.add(button);
+		stage.addActor(table);
+
+		//(Drawable) new Texture(Gdx.files.internal("textures/gui/TestButton.png")
+
 		
 		//sprite = new Sprite(region);
 		//sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
@@ -83,6 +116,12 @@ public class MainGame implements ApplicationListener {
 		batch.begin();
 		//sprite.draw(batch);
 		batch.draw(region2, 0, 0);
+		batch.end();
+		
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage.draw();
+		Table.drawDebug(stage);
+		
 		//batch.draw(texture2, 0, 0);
 		//Texture txt = _background.GetBackgroundTxt();
 		//batch.draw(_background.GetBackgroundTxt(), 800/2, 20);
@@ -90,7 +129,7 @@ public class MainGame implements ApplicationListener {
 		//gameAudio.heart_beat.play();
 		//sprite.draw(batch);
 
-		batch.end();
+		
 		
 		if(Gdx.input.isKeyPressed(Keys.RIGHT) &&
 		   region2.getRegionX() < (texture2.getWidth() - region2.getRegionWidth()))

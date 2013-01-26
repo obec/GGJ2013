@@ -17,11 +17,13 @@ public class Background {
 		_background = new Texture(Gdx.files.internal("textures/backgrounds/TestBackground.png"));
 		Gdx.app.log("Load", "W: " + Gdx.graphics.getWidth() + " H: " + Gdx.graphics.getHeight());
 		_backgroundRegion = new TextureRegion(_background, 0, 0, 10, 10); //Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		
+		_backgroundSpeed = 0.5f;
 	}
 	
 	public void ScrollBackground()
 	{
-		
+		_backgroundRegion.scroll(_backgroundSpeed * Gdx.graphics.getDeltaTime(), 0.0f);
 	}
 	
 	public TextureRegion GetBackground()
