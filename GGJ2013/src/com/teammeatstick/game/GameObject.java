@@ -10,8 +10,8 @@ public class GameObject {
 	public Vector2 position = new Vector2();
 	public Vector2 direction = new Vector2();
 	//velocty and delta floats for calculating pos 
-	private float velocity = 0.0f;
-	private float delta = 0.0f;
+	private float velocity = 1.0f;
+	private float delta = 1.0f;
 	
 	//object ID
 	public int id = 0;
@@ -33,6 +33,6 @@ public class GameObject {
 	}
 	
 	public void move(){
-		position.add(direction.x * velocity * delta, direction.y * velocity * delta);
+
 	}
 }

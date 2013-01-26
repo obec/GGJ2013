@@ -12,7 +12,7 @@ public class Audio {
 	public void create() {
 		sound = Gdx.audio.newSound(Gdx.files.internal(Constants.COLLIDE_NANO));
 		
-		heart_beat = Gdx.audio.newMusic(Gdx.files.internal(Constants.HEART_BEAT));
+		heart_beat = Gdx.audio.newMusic(Gdx.files.internal(Constants.HEART_BEAT_NORMAL));
 		heart_beat.setVolume(1.0f);
 		heart_beat.setLooping(true);
 		heart_beat.play();
