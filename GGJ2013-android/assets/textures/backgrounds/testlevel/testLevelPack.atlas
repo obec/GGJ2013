@@ -1,0 +1,36 @@
+
+testLevelPack.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+TestLevelPart1
+  rotate: false
+  xy: 1, 1
+  size: 1022, 1022
+  orig: 1022, 1022
+  offset: 0, 0
+  index: -1
+
+testLevelPack2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+TestLevelPart2
+  rotate: false
+  xy: 1, 1
+  size: 1022, 1022
+  orig: 1022, 1022
+  offset: 0, 0
+  index: -1
+
+testLevelPack3.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+TestLevelPart3
+  rotate: false
+  xy: 1, 1
+  size: 1022, 1022
+  orig: 1022, 1022
+  offset: 0, 0
+  index: -1
