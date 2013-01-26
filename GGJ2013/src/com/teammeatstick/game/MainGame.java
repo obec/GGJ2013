@@ -196,11 +196,6 @@ public class MainGame implements ApplicationListener {
 
 		//sprite.draw(batch);
 		
-		if(Gdx.input.justTouched()){
-			gameAudio.sound.play();
-			System.out.println("playing sound?");
-		}
-		
 		// Updates
 		_background.UpdateBackground();
 		
