@@ -115,7 +115,7 @@ public class MainGame implements ApplicationListener {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		//sprite.draw(batch);
-		batch.draw(region2, 0, 0);
+		batch.draw(_background.GetBackground(), 0, 0);
 		batch.end();
 		
 		stage.act(Gdx.graphics.getDeltaTime());
@@ -133,16 +133,8 @@ public class MainGame implements ApplicationListener {
 			System.out.println("playing sound?");
 		}
 		
-		if(Gdx.input.isKeyPressed(Keys.RIGHT) &&
-		   region2.getRegionX() < (texture2.getWidth() - region2.getRegionWidth()))
-		{
-			region2.scroll(1 * Gdx.graphics.getDeltaTime(), 0);
-		}
-		if(Gdx.input.isKeyPressed(Keys.LEFT) &&
-		   region2.getRegionX() > 0)
-		{
-			region2.scroll(-1 * Gdx.graphics.getDeltaTime(), 0);
-		}
+		// Updates
+		_background.UpdateBackground();
 	}
 
 	@Override
