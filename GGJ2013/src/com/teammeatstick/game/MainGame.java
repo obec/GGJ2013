@@ -70,22 +70,11 @@ public class MainGame implements ApplicationListener {
     static final float BOX_WORLD_TO=100f;
     private Body body;
 	
-	private static final int        FRAME_COLS = 2;         // #1
-    private static final int        FRAME_ROWS = 2;         // #2
-    
-    Animation                       walkAnimation;          // #3
-    Texture                         walkSheet;              // #4
-    TextureRegion[]                 walkFrames;             // #5
-    SpriteBatch                     spriteBatch;            // #6
-    TextureRegion                   currentFrame;           // #7
-    
-    float stateTime;                                        // #8
 	private SpriteAnimator _spriteAnimator;
     
 	@Override
 	public void create() {
-		_spriteAnimator = new SpriteAnimator();
-		_spriteAnimator.create();
+		_spriteAnimator = new SpriteAnimator(2, 2, "textures/sprites/VirusSprite.png", 4);
 		GdxNativesLoader.load();
 		world = new World(new Vector2(0, 0), true);  
 		float w = Gdx.graphics.getWidth();
