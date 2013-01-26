@@ -9,12 +9,14 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.teammeatstick.game.Audio;
 
 public class MainGame implements ApplicationListener {
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture texture;
 	private Sprite sprite;
+	private Audio gameAudio;
 	
 	@Override
 	public void create() {		
@@ -22,8 +24,9 @@ public class MainGame implements ApplicationListener {
 		float h = Gdx.graphics.getHeight();
 		
 		camera = new OrthographicCamera(1, h/w);
-		batch = new SpriteBatch();
-		
+		batch = new SpriteBatch();		
+		gameAudio = new Audio();
+
 		texture = new Texture(Gdx.files.internal("data/libgdx.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
@@ -45,9 +48,9 @@ public class MainGame implements ApplicationListener {
 	public void render() {		
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+		gameAudio.heart_beat.play();
 		sprite.draw(batch);
 		batch.end();
 	}
