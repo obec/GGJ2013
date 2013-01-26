@@ -95,6 +95,9 @@ public class MainGame implements ApplicationListener {
 		camera.setToOrtho(false, w, h);
 		batch = new SpriteBatch();
 		
+		//Let's try to create a player!
+		Player player1 = new Player(1, new Vector2(50,50), new Vector2(75,75));
+		
 		//texture = new Texture(Gdx.files.internal("data/libgdx.png"));
 		texture = new Texture(Gdx.files.internal("textures/backgrounds/TestTexture.png"));
 		//texture = new Texture(Gdx.files.internal("textures/backgrounds/TestBackground.png"));
@@ -105,7 +108,7 @@ public class MainGame implements ApplicationListener {
 		
 		batch = new SpriteBatch();		
 		gameAudio = new Audio();
-		gameAudio.create();
+		//gameAudio.create();
 
 		texture = new Texture(Gdx.files.internal("data/libgdx.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);

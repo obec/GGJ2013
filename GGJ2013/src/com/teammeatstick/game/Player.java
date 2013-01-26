@@ -23,4 +23,11 @@ public class Player extends GameObject {
 		this.direction.set(direction);
 	}
 	
+	public void draw() {
+		
+	}
+	
+	public void move(){
+		
+	}
 }
