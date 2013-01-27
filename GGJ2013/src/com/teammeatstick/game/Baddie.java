@@ -83,20 +83,24 @@ public class Baddie extends GameObject {
 				if (Player.playerTarget.x < this.position.x) {
 					baddieBody.applyLinearImpulse(new Vector2(-20000, 0), baddieBody.getPosition());
 				}*/
+				/*
 				if (Player.playerTarget.y > this.position.y) {
 					baddieBody.applyLinearImpulse(new Vector2(-0.02f, 0.0f), baddieBody.getPosition());
 				}
 				if (Player.playerTarget.y < this.position.y) {
 					Vector2 pos = baddieBody.getPosition();
 					baddieBody.setTransform(pos.x, pos.y + -50 * Gdx.graphics.getDeltaTime(), baddieBody.getAngle());
-				}
+				}*/
 
-				
+				Vector2 targetVector = new Vector2(Player.playerTarget.x - baddieBody.getPosition().x,
+			               Player.playerTarget.y - baddieBody.getPosition().y);
+			    
+			    this.baddieBody.applyForce(targetVector.nor().mul(2.0f), this.baddieBody.getPosition());
 				//float arcx = Player.playerTarget.x;
 				//float arcy = Player.playerTarget.y;
 			    //float desiredAngle = MathUtils.atan2(arcx,arcy);
 				//this.baddieBody.setTransform(Player.playerTarget, desiredAngle);
-				this.baddieBody.applyForce(velocity, direction);
+				// THIS ONE WORKS this.baddieBody.applyForce(velocity, direction);
 				//this.baddieBody.applyLinearImpulse(velocity, direction);
 			}
 
