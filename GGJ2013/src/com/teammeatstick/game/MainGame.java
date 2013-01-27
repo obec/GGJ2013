@@ -70,11 +70,7 @@ public class MainGame implements ApplicationListener {
     Box2DDebugRenderer debugRenderer;  
     static final float BOX_STEP=1/60f;  
     static final int BOX_VELOCITY_ITERATIONS=6;  
-    static final int BOX_POSITION_ITERATIONS=2;    
-    
-    private Body body;
-	
-	private SpriteAnimator _spriteAnimator;
+    static final int BOX_POSITION_ITERATIONS=2;
 	
 	private Vector2 _pulseVector = new Vector2(1f, 0f);
 	private Vector2 _dragVector = new Vector2(-0.001f, 0f);
@@ -108,11 +104,6 @@ public class MainGame implements ApplicationListener {
 										(Constants.WORLD_HEIGHT_METERS / 2),
 										0.0f));
 		Constants.CAMERA.update();//(w, h);//1, h/w);
-		
-		_spriteAnimator = new SpriteAnimator(2, 2, Constants.VIRUS_PLAYER, 4);
-		_spriteAnimator.create();
-		_spriteAnimator.updatePosition((Constants.WORLD_WIDTH_METERS),//Constants.PIXELS_PER_METER),
-									   (Constants.WORLD_HEIGHT_METERS));// * Constants.PIXELS_PER_METER);
 
 		batch = new SpriteBatch();
 		
@@ -176,26 +167,6 @@ public class MainGame implements ApplicationListener {
         PolygonShape topBox = new PolygonShape();  
         topBox.setAsBox(Constants.WORLD_WIDTH_METERS *2, 2.0f);  
         topBody.createFixture(topBox, 0.0f);
-        
-        //Dynamic Body  
-        BodyDef bodyDef = new BodyDef();  
-        bodyDef.type = BodyType.DynamicBody;  
-        bodyDef.position.set(_spriteAnimator.mySprite.getX() * Constants.WORLD_TO_BOX,
-        					 _spriteAnimator.mySprite.getY() * Constants.WORLD_TO_BOX);
-        
-        body = world.createBody(bodyDef);
-        body.setUserData(_spriteAnimator.mySprite);
-        CircleShape dynamicCircle = new CircleShape();
-        dynamicCircle.setRadius(1.0f);  
-        FixtureDef fixtureDef = new FixtureDef();  
-        fixtureDef.shape = dynamicCircle;  
-        fixtureDef.density = 0.1f;  
-        fixtureDef.friction = 0.4f;  
-        fixtureDef.restitution = 1;
-        body.createFixture(fixtureDef);
-        body.setUserData(_spriteAnimator);
-        
-        _spriteAnimator.mySprite.setOrigin(body.getPosition().x * Constants.WORLD_TO_BOX, body.getPosition().y * Constants.WORLD_TO_BOX);
         
         debugRenderer = new Box2DDebugRenderer();
 	}
@@ -279,14 +250,6 @@ public class MainGame implements ApplicationListener {
 		}
 
 		Pulse();
-		
-		// Physics
-		
-		
-		_spriteAnimator.updatePosition((body.getPosition().x * Constants.BOX_TO_WORLD),
-									   (body.getPosition().y * Constants.BOX_TO_WORLD));
-		//_spriteAnimator.mySprite.setPosition(body.getPosition().x, body.getPosition().y);
-		_spriteAnimator.render();
 		
 		Constants.CAMERA.update();
 		
