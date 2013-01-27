@@ -1,5 +1,6 @@
 package com.teammeatstick.game;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -71,7 +72,22 @@ public class Baddie extends GameObject {
 			}
 			
 			public void move(){
-				baddieBody.setLinearVelocity(Player.position);
+				System.out.println("Attempting to move baddies");
+				System.out.println(Player.playerTarget);
+				
+				float arcx = Player.playerTarget.x;
+				float arcy = Player.playerTarget.y;
+			    float desiredAngle = MathUtils.atan2(arcx,arcy);
+			    System.out.println(desiredAngle);
+			    System.out.println("before fucking with Player.position");
+			    System.out.println(Player.playerTarget);
+			    Vector2 target = new Vector2();
+			    target.set(Player.playerTarget.cpy());	
+			    System.out.println("after fucking with Player.position");
+			    System.out.println(Player.playerTarget);		    
+				baddieBody.setTransform(target, desiredAngle);
+				
+				baddieBody.applyLinearImpulse(velocity, direction);
 			}
 
 }
