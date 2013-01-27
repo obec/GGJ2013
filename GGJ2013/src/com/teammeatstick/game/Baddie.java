@@ -47,9 +47,9 @@ public class Baddie extends GameObject {
 				baddieBody = world.createBody(bodyDef);
 				
 				//our sprites are squares, no need to get anything else here
-				float radius = spriteAnimator.currentFrame.getRegionWidth();
+				float radius = spriteAnimator.currentFrame.getRegionWidth() * Constants.WORLD_TO_BOX;
 				//convert from pixels to box2d shiz
-				radius *= 0.01;
+				//radius *= 0.01;
 				// Create a circle shape and set its radius to the equivalent sprite width
 			    CircleShape circle = new CircleShape();
 				circle.setRadius(radius);
@@ -71,7 +71,7 @@ public class Baddie extends GameObject {
 			public void draw() {
 				this.position.set(baddieBody.getPosition().x * Constants.PIXELS_PER_METER,
 						          baddieBody.getPosition().y * Constants.PIXELS_PER_METER);
-				spriteAnimator.updatePosition((int)this.position.x, (int)this.position.y);
+				spriteAnimator.updatePosition(this.position.x, this.position.y);
 				spriteAnimator.render();
 			}
 			
