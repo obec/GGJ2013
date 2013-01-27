@@ -114,12 +114,23 @@ public class MainGame implements ApplicationListener {
 		
 		
 		//Let's try to create a player!
-		player1 = new Player(1, 1.0f, new Vector2(Gdx.graphics.getWidth()/2,Gdx.graphics.getWidth()/2), new Vector2(75,75), world, Constants.VIRUS_SPRITE);
+		player1 = new Player(1,
+				             1.0f,
+				             new Vector2(Constants.WORLD_WIDTH_METERS/2,
+								         Constants.WORLD_HEIGHT_METERS/2),
+						     new Vector2(75,75),
+						     world,
+						     Constants.VIRUS_SPRITE);
 		
 		//Now for some baddies!
 		baddies = new Baddie[baddieCount];
 		for (int i = 0; i < baddieCount; i++){
-			baddies[i] = new Baddie(i, new Vector2(MathUtils.random(Constants.SCREEN_WIDTH*2),Constants.SCREEN_HEIGHT), player1.position, world, Constants.VIRUS_SPRITE);
+			baddies[i] = new Baddie(i,
+					                new Vector2(MathUtils.random(Constants.WORLD_WIDTH_METERS),
+					                		    MathUtils.random(Constants.WORLD_HEIGHT_METERS)),
+					                player1.position,
+					                world,
+					                Constants.VIRUS_SPRITE);
 		}
 		
 		batch = new SpriteBatch();		
@@ -144,28 +155,29 @@ public class MainGame implements ApplicationListener {
 		table.add(button);
 		stage.addActor(table);
 		
-		//(Drawable) new Texture(Gdx.files.internal("textures/gui/TestButton.png")
-
-		
-		//sprite = new Sprite(region);
-		//sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
-		//sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
-		//sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
-		
 		_background = new Background();
 		
-		//Ground body  
-       /* BodyDef groundBodyDef = new BodyDef();  
-        groundBodyDef.position.set(new Vector2(Constants.WORLD_WIDTH_METERS * 2, 0.0f));  
-        Body groundBody = world.createBody(groundBodyDef);  
-        PolygonShape groundBox = new PolygonShape();  
-        groundBox.setAsBox(Constants.WORLD_WIDTH_METERS *2, 2.0f);  
-        groundBody.createFixture(groundBox, 0.0f);  */
+		// Bottom body  
+		BodyDef bottomBodyDef = new BodyDef();  
+        bottomBodyDef.position.set(new Vector2(Constants.WORLD_WIDTH_METERS * 2, 0.0f));  
+        Body bottomBody = world.createBody(bottomBodyDef);  
+        PolygonShape bottomBox = new PolygonShape();  
+        bottomBox.setAsBox(Constants.WORLD_WIDTH_METERS *2, 2.0f);  
+        bottomBody.createFixture(bottomBox, 0.0f);
+        
+        BodyDef topBodyDef = new BodyDef();  
+        topBodyDef.position.set(new Vector2(Constants.WORLD_WIDTH_METERS * 2, Constants.WORLD_HEIGHT_METERS));  
+        Body topBody = world.createBody(topBodyDef);  
+        PolygonShape topBox = new PolygonShape();  
+        topBox.setAsBox(Constants.WORLD_WIDTH_METERS *2, 2.0f);  
+        topBody.createFixture(topBox, 0.0f);
+        
         //Dynamic Body  
         BodyDef bodyDef = new BodyDef();  
         bodyDef.type = BodyType.DynamicBody;  
-        bodyDef.position.set(/*Constants.WORLD_WIDTH_METERS / 2,//*/_spriteAnimator.mySprite.getX() * Constants.WORLD_TO_BOX,
-        					 /*Constants.WORLD_HEIGHT_METERS / 2); //*/_spriteAnimator.mySprite.getY() * Constants.WORLD_TO_BOX);//Constants.CAMERA.viewportWidth / 2, Constants.CAMERA.viewportHeight / 2);  
+        bodyDef.position.set(_spriteAnimator.mySprite.getX() * Constants.WORLD_TO_BOX,
+        					 _spriteAnimator.mySprite.getY() * Constants.WORLD_TO_BOX);
+        
         body = world.createBody(bodyDef);
         CircleShape dynamicCircle = new CircleShape();  
         dynamicCircle.setRadius(1.0f);  
@@ -176,16 +188,10 @@ public class MainGame implements ApplicationListener {
         fixtureDef.restitution = 1;
         body.createFixture(fixtureDef);
         body.setUserData(_spriteAnimator);
+        
         _spriteAnimator.mySprite.setOrigin(body.getPosition().x * Constants.WORLD_TO_BOX, body.getPosition().y * Constants.WORLD_TO_BOX);
         
-        
         debugRenderer = new Box2DDebugRenderer();
-        
-        //_spriteAnimator.updatePosition((int)(body.getPosition().x * Constants.BOX_TO_WORLD),
-        //							   (int)(body.getPosition().y * Constants.BOX_TO_WORLD));
-        
-        //ChainShape chainShape = new ChainShape();
-        //chainShape.
 	}
 
 	@Override
@@ -199,71 +205,12 @@ public class MainGame implements ApplicationListener {
 		Gdx.gl.glClearColor(1, 0, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Constants.CAMERA.update();
-		//Constants.CAMERA.position.set(0f, Gdx.graphics.getHeight() / 2f, 0f);
-		//Constants.CAMERA.position.set((1 * body.getPosition().x) - 20, Gdx.graphics.getHeight() / 2, 0f);
-		//Constants.CAMERA.position += Constants.CAMERA.d;
-		
-		//if(Gdx.input.isKeyPressed(Keys.K))
-		//{
-			//Constants.CAMERA.position.add(10.f, 0f, 0f);
-		/*float cameraX = Constants.CAMERA.position.x;
-
-		batch.setProjectionMatrix(Constants.Constants.CAMERA.combined);
-		
-		//Constants.CAMERA.position.set(0f, Gdx.graphics.getHeight() / 2f, 0f);
-		//Constants.CAMERA.position.set((1 * body.getPosition().x) - 20, Gdx.graphics.getHeight() / 2, 0f);
-		//Constants.CAMERA.position += Constants.CAMERA.d;
-		
-		//if(Gdx.input.isKeyPressed(Keys.K))
-		//{
-			//camera.position.add(10.f, 0f, 0f);
-		float cameraX = Constants.Constants.CAMERA.position.x;
-		
-		float minimumX = (body.getPosition().x * BOX_WORLD_TO - 50) + (Gdx.graphics.getWidth() / 2f);
-		float maximumX = body.getPosition().x * BOX_WORLD_TO + 100f;
-		
-		if((body.getPosition().x * BOX_WORLD_TO - 50) + (Gdx.graphics.getWidth() / 2f) < Constants.CAMERA.position.x)
-		{
-			cameraX = minimumX;
-		}
-		else if(maximumX > Constants.Constants.CAMERA.position.x)
-		{
-			cameraX = maximumX;
-		}
-		else
-		{
-			cameraX += 100f * Gdx.graphics.getDeltaTime();
-		}
-		
-		
-		//Constants.CAMERA.position.set((body.getPosition().x - 50) + (Gdx.graphics.getWidth() / 2f), Constants.CAMERA.position.y, 0f);
-		Constants.CAMERA.position.set(cameraX, Constants.CAMERA.position.y, 0f);
-		Constants.CAMERA.update();
-			cameraX += 10f * Gdx.graphics.getDeltaTime();
-		}
-		
-		
-		//Constants.CAMERA.position.set((body.getPosition().x - 50) + (Gdx.graphics.getWidth() / 2f), Constants.CAMERA.position.y, 0f);
-		Constants.CAMERA.position.set(cameraX, Constants.CAMERA.position.y, 0f);
-		Constants.CAMERA.update();*/
-		
-		//Vector2 velocity = body.getLinearVelocity();
-			
-			//System.out.println("C: " + Constants.CAMERA.position);
-			//System.out.println("B: " + body.getPosition());
-		//}
-		//Constants.CAMERA.position.add(10f, 0f, 0f);
-		//Constants.CAMERA.update();
-		//System.out.println("C: " + Constants.CAMERA.position);
-		//Constants.CAMERA.update();
 		
 		batch.setProjectionMatrix(Constants.CAMERA.combined);
 		
 		_background.Draw(batch);
 		
-		
-		//Vector2 spritePos = body.getPosition();
-		
+		// Test Button
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 		Table.drawDebug(stage);
@@ -279,25 +226,21 @@ public class MainGame implements ApplicationListener {
 		}		
 		
 		//keypress stuff for the main body
-		if(Gdx.input.isKeyPressed(Keys.W))
+		if(Gdx.input.isKeyPressed(Keys.UP))
 		{
-			body.applyLinearImpulse(new Vector2(0, 0.05f), body.getPosition());
-			//Constants.CAMERA.position.y += 1;
+			Constants.CAMERA.position.y += 1;
 		}
-		if(Gdx.input.isKeyPressed(Keys.A))
+		if(Gdx.input.isKeyPressed(Keys.LEFT))
 		{
-			//Constants.CAMERA.position.x -= 1;
-			body.applyLinearImpulse(new Vector2(-0.05f, 0), body.getPosition());
+			Constants.CAMERA.position.x -= 1;	
 		}
-		if(Gdx.input.isKeyPressed(Keys.S))
+		if(Gdx.input.isKeyPressed(Keys.DOWN))
 		{
-			//Constants.CAMERA.position.y -= 1;
-			body.applyLinearImpulse(new Vector2(0, -0.05f), body.getPosition());
+			Constants.CAMERA.position.y -= 1;
 		}
-		if(Gdx.input.isKeyPressed(Keys.D))
+		if(Gdx.input.isKeyPressed(Keys.RIGHT))
 		{
-			//Constants.CAMERA.position.x += 1;
-			body.applyLinearImpulse(new Vector2(0.05f, 0), body.getPosition());
+			Constants.CAMERA.position.x += 1;
 		}
 
 		
@@ -321,11 +264,11 @@ public class MainGame implements ApplicationListener {
 		
 		player1.draw();
 		for(int i = 0; i < baddieCount; i++){
-			baddies[i].move();
+			//baddies[i].move();
 			baddies[i].draw();
 		}
 
-		//Pulse();
+		Pulse();
 		
 		debugRenderer.render(world, Constants.CAMERA.combined);
 		
@@ -337,10 +280,10 @@ public class MainGame implements ApplicationListener {
 		//_spriteAnimator.mySprite.setPosition(body.getPosition().x, body.getPosition().y);
 		_spriteAnimator.render();
 		
-        System.out.println("Body: " + body.getPosition().x + " " + body.getPosition().y);
+        //System.out.println("Body: " + body.getPosition().x + " " + body.getPosition().y);
 	}
 
-	/*public void Pulse()
+	public void Pulse()
 	{
 		_pulseTime += Gdx.graphics.getDeltaTime();
 		
@@ -378,7 +321,7 @@ public class MainGame implements ApplicationListener {
 		//		_dragApplied = _dragApplied + _dragVector.x;
 		//	}
 		//}
-	}*/
+	}
 	
 	@Override
 	public void resize(int width, int height) {
