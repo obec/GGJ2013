@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Animator;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -78,6 +79,7 @@ public class MainGame implements ApplicationListener {
 	private float _pulseInterval = 3.0f;
 	private float _pulseTime = 3.0f;
 	private int _maxPulse;
+	private Rectangle glViewport;
     
 	@Override
 	public void create() {
@@ -169,20 +171,24 @@ public class MainGame implements ApplicationListener {
 		//{
 			//camera.position.add(10.f, 0f, 0f);
 		float cameraX = camera.position.x;
+		float spriteAdjustmentX;
 		
 		float minimumX = (body.getPosition().x - 50) + (Gdx.graphics.getWidth() / 2f);
 		float maximumX = body.getPosition().x + 100f;
 		
-		if((body.getPosition().x - 50) + (Gdx.graphics.getWidth() / 2f) < camera.position.x)
+		if(minimumX < camera.position.x)
 		{
+			spriteAdjustmentX = cameraX - minimumX;
 			cameraX = minimumX;
 		}
 		else if(maximumX > camera.position.x)
 		{
+			spriteAdjustmentX = cameraX - maximumX;
 			cameraX = maximumX;
 		}
 		else
 		{
+			spriteAdjustmentX = cameraX - 10f * Gdx.graphics.getDeltaTime();
 			cameraX += 10f * Gdx.graphics.getDeltaTime();
 		}
 		
@@ -205,8 +211,6 @@ public class MainGame implements ApplicationListener {
 		
 		
 		//Vector2 spritePos = body.getPosition();
-		_spriteAnimator.updatePosition((int)body.getPosition().x /*+ (Gdx.graphics.getWidth() /2)*/, (int)(body.getPosition().y));
-		_spriteAnimator.render();
 		
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
@@ -244,6 +248,13 @@ public class MainGame implements ApplicationListener {
 		{
 			body.applyLinearImpulse(new Vector2(50000, 0), body.getPosition());
 		}
+		
+		
+		
+		_spriteAnimator.updatePosition((int)body.getPosition().x, (int)body.getPosition().y);
+		_spriteAnimator.render(camera);
+		System.out.print("body.getPosition" + body.getPosition().toString());
+		System.out.print(" cameraX" + cameraX);
 		
 		Pulse();
 		

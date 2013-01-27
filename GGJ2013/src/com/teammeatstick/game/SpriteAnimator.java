@@ -2,13 +2,14 @@ package com.teammeatstick.game;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 
-public class SpriteAnimator implements ApplicationListener {
+public class SpriteAnimator {
 
         private int			FRAME_COLS;
         private int			FRAME_ROWS;
@@ -34,7 +35,6 @@ public class SpriteAnimator implements ApplicationListener {
         	this.create();
         }
         
-        @Override
         public void create() {
                 spriteSheet = new Texture(Gdx.files.internal(filePath));
                 TextureRegion[][] tmp = TextureRegion.split(spriteSheet, spriteSheet.getWidth() / FRAME_COLS, spriteSheet.getHeight() / FRAME_ROWS);
@@ -51,34 +51,30 @@ public class SpriteAnimator implements ApplicationListener {
                 currentFrame = spriteAnimation.getKeyFrame(stateTime, true); 		// prime first frame
         }
 
-        @Override
-        public void render() {
+        public void render(OrthographicCamera camera) {
                 stateTime += Gdx.graphics.getDeltaTime();
                 currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
+                spriteBatch.setProjectionMatrix(camera.combined);
                 spriteBatch.begin();
                 spriteBatch.draw(currentFrame, xPos, yPos);
                 spriteBatch.end();
         }
 
-		@Override
 		public void resize(int width, int height) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
 		public void pause() {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
 		public void resume() {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
 		public void dispose() {
 			// TODO Auto-generated method stub
 			
