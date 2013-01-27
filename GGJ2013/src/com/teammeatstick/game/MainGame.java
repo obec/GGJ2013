@@ -148,7 +148,7 @@ public class MainGame implements ApplicationListener {
 		button = new TextButton("ClickMe", style);
 		
 		
-		table.add(button);
+		//table.add(button);
 		stage.addActor(table);
 		
 		_background = new Background();
@@ -246,7 +246,7 @@ public class MainGame implements ApplicationListener {
 		
 		player1.draw();
 		for(int i = 0; i < baddieCount; i++){
-			//baddies[i].move();
+			baddies[i].move();
 			baddies[i].draw();
 		}
 
