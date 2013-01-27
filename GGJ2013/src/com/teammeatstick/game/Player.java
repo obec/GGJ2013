@@ -14,11 +14,11 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Player extends GameObject {
 	
-	public Vector2 position = new Vector2();
+	public static Vector2 position = new Vector2();
 	public Vector2 velocity = new Vector2();
 	public Vector2 direction = new Vector2();
 	
-	public Body body;
+	public Body playerBody;
 	
 	public int hitPoints = 100;
 	public SpriteAnimator spriteAnimator;
@@ -44,7 +44,7 @@ public class Player extends GameObject {
 		bodyDef.position.set(this.position);
 
 		// Create our body in the world using our body definition
-		body = world.createBody(bodyDef);
+		playerBody = world.createBody(bodyDef);
 		
 		//our sprites are squares, no need to get anything else here
 		float radius = spriteAnimator.currentFrame.getRegionWidth();
@@ -62,40 +62,34 @@ public class Player extends GameObject {
 		fixtureDef.restitution = 0.6f; // Make it bounce a little bit
 
 		// Create our fixture and attach it to the body
-		Fixture fixture = body.createFixture(fixtureDef);
+		Fixture fixture = playerBody.createFixture(fixtureDef);
 	    Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
 		circle.dispose();
 	}
 	
 	public void draw() {
-		this.position.set(body.getPosition());
+		this.position.set(playerBody.getPosition());
 		spriteAnimator.updatePosition((int)this.position.x, (int)this.position.y);
 		spriteAnimator.render();
 	}
 	
-	public void move(){
-		
-		if(Gdx.input.isKeyPressed(Keys.W))
-		{
-			//Gdx.app.log("Physics", "Applying force UP");
-			//body.applyLinearImpulse(new Vector2(0, 5000), body.getPosition());
-			Vector2 pos = body.getPosition();
-			body.setTransform(pos.x, pos.y + 100 * Gdx.graphics.getDeltaTime(), body.getAngle());
+	public void moveUp() {
+		Vector2 pos = playerBody.getPosition();
+		playerBody.setTransform(pos.x, pos.y + 100 * Gdx.graphics.getDeltaTime(), playerBody.getAngle());
 		}
-		if(Gdx.input.isKeyPressed(Keys.A))
-		{
-			body.applyLinearImpulse(new Vector2(-50000, 0), body.getPosition());
+	
+	public void moveLeft() {
+			playerBody.applyLinearImpulse(new Vector2(-50000, 0), playerBody.getPosition());
 		}
-		if(Gdx.input.isKeyPressed(Keys.S))
-		{
-			Vector2 pos = body.getPosition();
-			body.setTransform(pos.x, pos.y + -100 * Gdx.graphics.getDeltaTime(), body.getAngle());
+	
+	public void moveDown() {
+			Vector2 pos = playerBody.getPosition();
+			playerBody.setTransform(pos.x, pos.y + -100 * Gdx.graphics.getDeltaTime(), playerBody.getAngle());
 			//body.applyLinearImpulse(new Vector2(0, -5000), body.getPosition());
 		}
-		if(Gdx.input.isKeyPressed(Keys.D))
-		{
-			body.applyLinearImpulse(new Vector2(50000, 0), body.getPosition());
+	
+	public void moveRight() {
+			playerBody.applyLinearImpulse(new Vector2(50000, 0), playerBody.getPosition());
 		}
-	}
 }

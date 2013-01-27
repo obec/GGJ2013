@@ -39,6 +39,7 @@ public class Audio implements ContactListener {
 	@Override
 	public void beginContact(Contact contact) {
 		sound.play();
+		System.out.println("BEGIN CONTACT!");
 		
 	}
 

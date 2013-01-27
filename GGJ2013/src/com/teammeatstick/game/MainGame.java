@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.g3d.Animator;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -80,7 +81,9 @@ public class MainGame implements ApplicationListener {
 	private int _maxPulse;
 	private Rectangle glViewport;
 	
-	Player player1;
+	private Player player1;
+	private Baddie[] baddies;
+	private int baddieCount = 5;
     
 	@Override
 	public void create() {
@@ -94,11 +97,16 @@ public class MainGame implements ApplicationListener {
 		batch = new SpriteBatch();
 		
 		//Let's try to create a player!
-		player1 = new Player(1, 1.0f, new Vector2(50,50), new Vector2(75,75), world, Constants.VIRUS_SPRITE);
+		player1 = new Player(1, 1.0f, new Vector2(Gdx.graphics.getWidth()/2,Gdx.graphics.getWidth()/2), new Vector2(75,75), world, Constants.VIRUS_SPRITE);
+		
+		//Now for some baddies!
+		baddies = new Baddie[baddieCount];
+		for (int i = 0; i < baddieCount; i++){
+			baddies[i] = new Baddie(i, new Vector2(MathUtils.random(Gdx.graphics.getWidth()),MathUtils.random(Gdx.graphics.getHeight())), new Vector2(MathUtils.random(Gdx.graphics.getWidth()),MathUtils.random(Gdx.graphics.getHeight())), world, Constants.VIRUS_SPRITE);
+		}
 		
 		batch = new SpriteBatch();		
 		gameAudio = new Audio();
-		//gameAudio.create();		
 
 		stage = new Stage(20, 400, true);
 		Table table = new Table();
@@ -222,7 +230,8 @@ public class MainGame implements ApplicationListener {
 			//gameAudio.sound.play();
 			System.out.println("playing sound?");
 		}		
-
+		
+		/*//keypress stuff for the main body
 		if(Gdx.input.isKeyPressed(Keys.W))
 		{
 			//Gdx.app.log("Physics", "Applying force UP");
@@ -243,9 +252,31 @@ public class MainGame implements ApplicationListener {
 		if(Gdx.input.isKeyPressed(Keys.D))
 		{
 			body.applyLinearImpulse(new Vector2(50000, 0), body.getPosition());
+		}*/
+		
+		//WASD keyboard input
+		if(Gdx.input.isKeyPressed(Keys.W))
+		{
+			player1.moveUp();
+		}
+		if(Gdx.input.isKeyPressed(Keys.A))
+		{
+			player1.moveLeft();
+		}
+		if(Gdx.input.isKeyPressed(Keys.S))
+		{
+			player1.moveDown();
+		}
+		if(Gdx.input.isKeyPressed(Keys.D))
+		{
+			player1.moveRight();
 		}
 		
 		player1.draw();
+		for(int i = 0; i < baddieCount; i++){
+			baddies[i].move();
+			baddies[i].draw();
+		}
 		
 		//_spriteAnimator.updatePosition((int)body.getPosition().x, (int)body.getPosition().y);
 		//_spriteAnimator.render();
