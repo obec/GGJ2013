@@ -46,6 +46,7 @@ public class Player extends GameObject {
 
 		// Create our body in the world using our body definition
 		playerBody = world.createBody(bodyDef);
+		playerBody.setUserData(this);
 		
 		//our sprites are squares, no need to get anything else here
 		float radius = spriteAnimator.currentFrame.getRegionWidth() * Constants.WORLD_TO_BOX ;
