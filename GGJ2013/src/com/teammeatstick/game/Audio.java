@@ -27,7 +27,8 @@ public class Audio implements ContactListener {
 	}
 	public void triggerSound(FileHandle soundFile, float soundVolume) {
 		sound = Gdx.audio.newSound(soundFile);
-		sound.setVolume(0, soundVolume);		
+		//sound.setVolume(0,soundVolume);
+		sound.play(soundVolume);
 	};
 
 	public void pause() {

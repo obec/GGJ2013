@@ -196,6 +196,7 @@ public class MainGame implements ApplicationListener {
 
 	@Override
 	public void dispose() {
+		gameAudio.dispose();
 		batch.dispose();
 		_background.dispose();
 	}
@@ -220,7 +221,7 @@ public class MainGame implements ApplicationListener {
 		if(Gdx.input.justTouched()){
 			//gameAudio.sound = Gdx.audio.newSound(Constants.COLLIDE_NANO);
 			//Gdx.audio.newSound(Constants.COLLIDE_NANO).play();
-			gameAudio.triggerSound(Constants.COLLIDE_NANO, 0.5f);
+			gameAudio.triggerSound(Constants.COLLIDE_NANO, 1f);
 			//gameAudio.sound.play();
 			System.out.println("playing sound?");
 		}		
