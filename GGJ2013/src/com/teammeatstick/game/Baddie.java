@@ -87,8 +87,7 @@ public class Baddie extends GameObject {
 					baddieBody.applyLinearImpulse(new Vector2(-20000, 0), baddieBody.getPosition());
 				}*/
 				if (Player.playerTarget.y > this.position.y) {
-					Vector2 pos = baddieBody.getPosition();
-					baddieBody.setTransform(pos.x, pos.y + 50 * Gdx.graphics.getDeltaTime(), baddieBody.getAngle());
+					baddieBody.applyLinearImpulse(new Vector2(-0.02f, 0.0f), baddieBody.getPosition());
 				}
 				if (Player.playerTarget.y < this.position.y) {
 					Vector2 pos = baddieBody.getPosition();
