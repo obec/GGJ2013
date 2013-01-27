@@ -104,7 +104,7 @@ public class SpriteAnimator implements ApplicationListener {
 		
 		public void updatePosition(float x, float y)
 		{
-			mySprite.setPosition(x - (currentFrame.getRegionWidth() / Constants.PIXELS_PER_METER),
-								 y - (currentFrame.getRegionHeight() / Constants.PIXELS_PER_METER));
+			mySprite.setPosition(x - ((currentFrame.getRegionWidth() / Constants.PIXELS_PER_METER) / 2),
+								 y - ((currentFrame.getRegionHeight() / Constants.PIXELS_PER_METER) /2));
 		}
 }
