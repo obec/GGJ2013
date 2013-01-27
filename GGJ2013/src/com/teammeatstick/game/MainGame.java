@@ -205,7 +205,12 @@ public class MainGame implements ApplicationListener {
 			gameAudio.triggerSound(Constants.COLLIDE_NANO, 1f);
 			//gameAudio.sound.play();
 			System.out.println("playing sound?");
-		}		
+		}
+		
+		if(player1.position.x > Constants.CAMERA.position.x)
+		{
+			Constants.CAMERA.position.x = player1.position.x;
+		}
 		
 		//keypress stuff for the main body
 		if(Gdx.input.isKeyPressed(Keys.UP))
@@ -246,7 +251,7 @@ public class MainGame implements ApplicationListener {
 		
 		player1.draw();
 		for(int i = 0; i < baddieCount; i++){
-			//baddies[i].move();
+			baddies[i].move();
 			baddies[i].draw();
 		}
 
