@@ -3,6 +3,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -12,37 +13,45 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class SpriteAnimator implements ApplicationListener {
 
-        private final int        FRAME_COLS = 2;         // #1
-        private final int        FRAME_ROWS = 2;         // #2
+        private int			FRAME_COLS;
+        private int			FRAME_ROWS;
+        private float		FRAMES_PER_SECOND;
+        private String		filePath;
         
-        Animation                       walkAnimation;          // #3
-        Texture                         walkSheet;              // #4
-        TextureRegion[]                 walkFrames;             // #5
-        SpriteBatch                     spriteBatch;            // #6
-        public TextureRegion                   currentFrame;           // #7
+        Animation			spriteAnimation;
+        Texture				spriteSheet;
+        TextureRegion[]		spriteFrames;
+        SpriteBatch			spriteBatch;
+        TextureRegion		currentFrame;
         
-        float stateTime;                                        // #8
+        float stateTime;
         
-        //public float xPos = 0;
-        //public float yPos = 0;
         public Sprite mySprite;
 
+        public SpriteAnimator(int col, int row, String relativeFilePath, int framesPerSecond) {
+        	FRAME_COLS = col;
+        	FRAME_ROWS = row;
+        	filePath = relativeFilePath;
+        	FRAMES_PER_SECOND = framesPerSecond;
+        	this.create();
+        }
+        
         @Override
         public void create() {
-                walkSheet = new Texture(Gdx.files.internal("textures/sprites/VirusSprite.png"));     // #9
-                TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth() / 
-FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);                                // #10
-                walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+                spriteSheet = new Texture(Gdx.files.internal(filePath));
+                TextureRegion[][] tmp = TextureRegion.split(spriteSheet, spriteSheet.getWidth() / FRAME_COLS, spriteSheet.getHeight() / FRAME_ROWS);
+                spriteFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
                 int index = 0;
                 for (int i = 0; i < FRAME_ROWS; i++) {
                         for (int j = 0; j < FRAME_COLS; j++) {
-                                walkFrames[index++] = tmp[i][j];
+                                spriteFrames[index++] = tmp[i][j];
                         }
                 }
-                walkAnimation = new Animation(0.025f, walkFrames);              // #11
-                spriteBatch = new SpriteBatch();                                // #12
-                stateTime = 0f;                                                 // #13
-                currentFrame = walkAnimation.getKeyFrame(stateTime, true); 		// prime first frame
+                
+                spriteAnimation = new Animation(0.025f, spriteFrames);           
+                spriteBatch = new SpriteBatch();                                
+                stateTime = 0f;                                                 
+                currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
                 mySprite = new Sprite(currentFrame);
         }
 
@@ -50,8 +59,9 @@ FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);                                
         public void render() {
                 //Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);                                            // #14
                 stateTime += Gdx.graphics.getDeltaTime();                       // #15
-                currentFrame = walkAnimation.getKeyFrame(stateTime, true);      // #16
+                currentFrame = spriteAnimation.getKeyFrame(stateTime, true);      // #16
                 mySprite.setTexture(currentFrame.getTexture());
+                spriteBatch.setProjectionMatrix(Constants.CAMERA.combined);
                 spriteBatch.begin();
                 spriteBatch.draw(currentFrame,
                 				mySprite.getX() / Constants.WORLD_WIDTH_METERS,
@@ -68,25 +78,25 @@ FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);                                
         	spriteBatch.setProjectionMatrix(camera.combined);
         }
 
-		@Override
+        @Override
 		public void resize(int width, int height) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+        @Override
 		public void pause() {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+        @Override
 		public void resume() {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+        @Override
 		public void dispose() {
 			// TODO Auto-generated method stub
 			

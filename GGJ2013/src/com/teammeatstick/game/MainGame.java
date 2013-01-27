@@ -25,8 +25,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Animator;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -52,7 +54,6 @@ import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 import com.sun.xml.internal.stream.Entity;
 
 public class MainGame implements ApplicationListener {
-	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Sprite sprite;
 	private Audio gameAudio;
@@ -72,16 +73,6 @@ public class MainGame implements ApplicationListener {
     
     private Body body;
 	
-	private static final int        FRAME_COLS = 2;         // #1
-    private static final int        FRAME_ROWS = 2;         // #2
-    
-    Animation                       walkAnimation;          // #3
-    Texture                         walkSheet;              // #4
-    TextureRegion[]                 walkFrames;             // #5
-    SpriteBatch                     spriteBatch;            // #6
-    TextureRegion                   currentFrame;           // #7
-    
-    float stateTime;                                        // #8
 	private SpriteAnimator _spriteAnimator;
 	
 	private Vector2 _pulseVector = new Vector2(1f, 0f);
@@ -93,42 +84,46 @@ public class MainGame implements ApplicationListener {
 	private float _maxPulseDragPercent = .75f;
 	private float _dragApplied = 0.0f;
     
+	private Rectangle glViewport;
+	
+	private Player player1;
+	private Baddie[] baddies;
+	private int baddieCount = 5;		
+    
 	@Override
 	public void create() {
-		//_spriteAnimator = new SpriteAnimator();
-		//_spriteAnimator.create();
-		//_spriteAnimator.updatePosition((Constants.WORLD_WIDTH_METERS + 4), //* Constants.PIXELS_PER_METER,
-		//							   (Constants.WORLD_HEIGHT_METERS + 4));// * Constants.PIXELS_PER_METER);
-		
 		GdxNativesLoader.load();
 		world = new World(new Vector2(0, 0), true);  
 
-		camera = new OrthographicCamera();//(Constants.WORLD_WIDTH_METERS / 2 )* Constants.PIXELS_PER_METER,
-		camera.setToOrtho(false,
+		Constants.CAMERA.setToOrtho(false,
 						  Constants.WORLD_WIDTH_METERS,
 						  Constants.WORLD_HEIGHT_METERS);// / Constants.PIXELS_PER_METER);//(Constants.WORLD_HEIGHT_METERS / 2 )* Constants.PIXELS_PER_METER);
 		
-		camera.position.set(new Vector3((Constants.WORLD_WIDTH_METERS / 2),
+		Constants.CAMERA.position.set(new Vector3((Constants.WORLD_WIDTH_METERS / 2),
 										(Constants.WORLD_HEIGHT_METERS / 2),
 										0.0f));
-		camera.update();//(w, h);//1, h/w);
+		Constants.CAMERA.update();//(w, h);//1, h/w);
 		
-		_spriteAnimator = new SpriteAnimator();
+		_spriteAnimator = new SpriteAnimator(2, 2, "textures/sprites/VirusSprite.png", 4);
 		_spriteAnimator.create();
-		_spriteAnimator.setCamera(camera);
 		_spriteAnimator.updatePosition((Constants.WORLD_WIDTH_METERS),//Constants.PIXELS_PER_METER),
 									   (Constants.WORLD_HEIGHT_METERS));// * Constants.PIXELS_PER_METER);
-		//camera.setToOrtho(false, w, h);
+
 		batch = new SpriteBatch();
 		
 		
 		
 		//Let's try to create a player!
-		Player player1 = new Player(1, new Vector2(50,50), new Vector2(75,75));
+		player1 = new Player(1, 1.0f, new Vector2(Gdx.graphics.getWidth()/2,Gdx.graphics.getWidth()/2), new Vector2(75,75), world, Constants.VIRUS_SPRITE);
+		
+		//Now for some baddies!
+		baddies = new Baddie[baddieCount];
+		for (int i = 0; i < baddieCount; i++){
+			baddies[i] = new Baddie(i, new Vector2(MathUtils.random(Gdx.graphics.getWidth()),MathUtils.random(Gdx.graphics.getHeight())), new Vector2(MathUtils.random(Gdx.graphics.getWidth()),MathUtils.random(Gdx.graphics.getHeight())), world, Constants.VIRUS_SPRITE);
+		}
 		
 		batch = new SpriteBatch();		
 		gameAudio = new Audio();
-		//gameAudio.create();		
 
 		stage = new Stage(20, 400, true);
 		Table table = new Table();
@@ -145,7 +140,7 @@ public class MainGame implements ApplicationListener {
 		
 		table.add(button);
 		stage.addActor(table);
-
+		
 		//(Drawable) new Texture(Gdx.files.internal("textures/gui/TestButton.png")
 
 		
@@ -167,7 +162,7 @@ public class MainGame implements ApplicationListener {
         BodyDef bodyDef = new BodyDef();  
         bodyDef.type = BodyType.DynamicBody;  
         bodyDef.position.set(/*Constants.WORLD_WIDTH_METERS / 2,//*/_spriteAnimator.mySprite.getX() * Constants.WORLD_TO_BOX,
-        					 /*Constants.WORLD_HEIGHT_METERS / 2); //*/_spriteAnimator.mySprite.getY() * Constants.WORLD_TO_BOX);//camera.viewportWidth / 2, camera.viewportHeight / 2);  
+        					 /*Constants.WORLD_HEIGHT_METERS / 2); //*/_spriteAnimator.mySprite.getY() * Constants.WORLD_TO_BOX);//Constants.CAMERA.viewportWidth / 2, Constants.CAMERA.viewportHeight / 2);  
         body = world.createBody(bodyDef);
         CircleShape dynamicCircle = new CircleShape();  
         dynamicCircle.setRadius(1.0f);  
@@ -200,24 +195,35 @@ public class MainGame implements ApplicationListener {
 	public void render() {		
 		Gdx.gl.glClearColor(1, 0, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		camera.update();
-		//camera.position.set(0f, Gdx.graphics.getHeight() / 2f, 0f);
-		//camera.position.set((1 * body.getPosition().x) - 20, Gdx.graphics.getHeight() / 2, 0f);
-		//camera.position += camera.d;
+		Constants.CAMERA.update();
+		//Constants.CAMERA.position.set(0f, Gdx.graphics.getHeight() / 2f, 0f);
+		//Constants.CAMERA.position.set((1 * body.getPosition().x) - 20, Gdx.graphics.getHeight() / 2, 0f);
+		//Constants.CAMERA.position += Constants.CAMERA.d;
+		
+		//if(Gdx.input.isKeyPressed(Keys.K))
+		//{
+			//Constants.CAMERA.position.add(10.f, 0f, 0f);
+		/*float cameraX = Constants.CAMERA.position.x;
+
+		batch.setProjectionMatrix(Constants.Constants.CAMERA.combined);
+		
+		//Constants.CAMERA.position.set(0f, Gdx.graphics.getHeight() / 2f, 0f);
+		//Constants.CAMERA.position.set((1 * body.getPosition().x) - 20, Gdx.graphics.getHeight() / 2, 0f);
+		//Constants.CAMERA.position += Constants.CAMERA.d;
 		
 		//if(Gdx.input.isKeyPressed(Keys.K))
 		//{
 			//camera.position.add(10.f, 0f, 0f);
-		/*float cameraX = camera.position.x;
+		float cameraX = Constants.Constants.CAMERA.position.x;
 		
 		float minimumX = (body.getPosition().x * BOX_WORLD_TO - 50) + (Gdx.graphics.getWidth() / 2f);
 		float maximumX = body.getPosition().x * BOX_WORLD_TO + 100f;
 		
-		if((body.getPosition().x * BOX_WORLD_TO - 50) + (Gdx.graphics.getWidth() / 2f) < camera.position.x)
+		if((body.getPosition().x * BOX_WORLD_TO - 50) + (Gdx.graphics.getWidth() / 2f) < Constants.CAMERA.position.x)
 		{
 			cameraX = minimumX;
 		}
-		else if(maximumX > camera.position.x)
+		else if(maximumX > Constants.Constants.CAMERA.position.x)
 		{
 			cameraX = maximumX;
 		}
@@ -227,22 +233,28 @@ public class MainGame implements ApplicationListener {
 		}
 		
 		
-		//camera.position.set((body.getPosition().x - 50) + (Gdx.graphics.getWidth() / 2f), camera.position.y, 0f);
-		camera.position.set(cameraX, camera.position.y, 0f);
-		camera.update();*/
-	
+		//Constants.CAMERA.position.set((body.getPosition().x - 50) + (Gdx.graphics.getWidth() / 2f), Constants.CAMERA.position.y, 0f);
+		Constants.CAMERA.position.set(cameraX, Constants.CAMERA.position.y, 0f);
+		Constants.CAMERA.update();
+			cameraX += 10f * Gdx.graphics.getDeltaTime();
+		}
+		
+		
+		//Constants.CAMERA.position.set((body.getPosition().x - 50) + (Gdx.graphics.getWidth() / 2f), Constants.CAMERA.position.y, 0f);
+		Constants.CAMERA.position.set(cameraX, Constants.CAMERA.position.y, 0f);
+		Constants.CAMERA.update();*/
 		
 		//Vector2 velocity = body.getLinearVelocity();
 			
-			//System.out.println("C: " + camera.position);
+			//System.out.println("C: " + Constants.CAMERA.position);
 			//System.out.println("B: " + body.getPosition());
 		//}
-		//camera.position.add(10f, 0f, 0f);
-		//camera.update();
-		//System.out.println("C: " + camera.position);
-		//camera.update();
+		//Constants.CAMERA.position.add(10f, 0f, 0f);
+		//Constants.CAMERA.update();
+		//System.out.println("C: " + Constants.CAMERA.position);
+		//Constants.CAMERA.update();
 		
-		batch.setProjectionMatrix(camera.combined);
+		batch.setProjectionMatrix(Constants.CAMERA.combined);
 		
 		_background.Draw(batch);
 		
@@ -253,46 +265,67 @@ public class MainGame implements ApplicationListener {
 		stage.draw();
 		Table.drawDebug(stage);
 		
-		//batch.draw(texture2, 0, 0);
-		//batch.draw(_background.GetBackgroundTxt(), 800/2, 20);
-
-		//sprite.draw(batch);
+		debugRenderer.render(world, Constants.CAMERA.combined);
 		
 		if(Gdx.input.justTouched()){
 			//gameAudio.sound.play();
 			System.out.println("playing sound?");
 		}		
-
+		
+		//keypress stuff for the main body
 		if(Gdx.input.isKeyPressed(Keys.W))
 		{
 			body.applyLinearImpulse(new Vector2(0, 0.05f), body.getPosition());
-			//camera.position.y += 1;
+			//Constants.CAMERA.position.y += 1;
 		}
 		if(Gdx.input.isKeyPressed(Keys.A))
 		{
-			//camera.position.x -= 1;
+			//Constants.CAMERA.position.x -= 1;
 			body.applyLinearImpulse(new Vector2(-0.05f, 0), body.getPosition());
 		}
 		if(Gdx.input.isKeyPressed(Keys.S))
 		{
-			//camera.position.y -= 1;
+			//Constants.CAMERA.position.y -= 1;
 			body.applyLinearImpulse(new Vector2(0, -0.05f), body.getPosition());
 		}
 		if(Gdx.input.isKeyPressed(Keys.D))
 		{
-			//camera.position.x += 1;
+			//Constants.CAMERA.position.x += 1;
 			body.applyLinearImpulse(new Vector2(0.05f, 0), body.getPosition());
 		}
-		camera.update();
+
 		
+		//WASD keyboard input
+		if(Gdx.input.isKeyPressed(Keys.W))
+		{
+			player1.moveUp();
+		}
+		if(Gdx.input.isKeyPressed(Keys.A))
+		{
+			player1.moveLeft();
+		}
+		if(Gdx.input.isKeyPressed(Keys.S))
+		{
+			player1.moveDown();
+		}
+		if(Gdx.input.isKeyPressed(Keys.D))
+		{
+			player1.moveRight();
+		}
+		
+		player1.draw();
+		for(int i = 0; i < baddieCount; i++){
+			baddies[i].move();
+			baddies[i].draw();
+		}
+
 		Pulse();
 		
-		debugRenderer.render(world, camera.combined);
+		debugRenderer.render(world, Constants.CAMERA.combined);
 		
 		// Physics
 		world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS);
 		
-		_spriteAnimator.setCamera(camera);
 		_spriteAnimator.updatePosition((body.getPosition().x * Constants.BOX_TO_WORLD),
 									   (body.getPosition().y * Constants.BOX_TO_WORLD));
 		//_spriteAnimator.mySprite.setPosition(body.getPosition().x, body.getPosition().y);
@@ -343,11 +376,11 @@ public class MainGame implements ApplicationListener {
 	
 	@Override
 	public void resize(int width, int height) {
-	   Vector3 oldpos = new Vector3(camera.position);
-	   camera.setToOrtho(false,
+	   Vector3 oldpos = new Vector3(Constants.CAMERA.position);
+	   Constants.CAMERA.setToOrtho(false,
 	                      width / Constants.PIXELS_PER_METER,
 	                      height / Constants.PIXELS_PER_METER);
-	   camera.translate(oldpos.x-camera.position.x, oldpos.y-camera.position.y);
+	   Constants.CAMERA.translate(oldpos.x-Constants.CAMERA.position.x, oldpos.y-Constants.CAMERA.position.y);
 	}
 
 	@Override
