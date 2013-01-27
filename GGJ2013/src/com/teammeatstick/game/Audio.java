@@ -10,9 +10,9 @@ public class Audio {
 	Music heart_beat;
 	
 	public void create() {
-		sound = Gdx.audio.newSound(Gdx.files.internal(Constants.VENOM_BOMB));
+		//sound = Gdx.audio.newSound(Gdx.files.internal(Constants.VENOM_BOMB));
 		
-		heart_beat = Gdx.audio.newMusic(Gdx.files.internal(Constants.HEART_BEAT));
+		heart_beat = Gdx.audio.newMusic(Gdx.files.internal(Constants.HEART_BEAT_SLOW));
 		heart_beat.setVolume(1.0f);
 		heart_beat.setLooping(true);
 		heart_beat.play();

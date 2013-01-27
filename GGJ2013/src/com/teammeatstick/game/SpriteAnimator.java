@@ -1,9 +1,11 @@
 package com.teammeatstick.game;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -17,12 +19,13 @@ public class SpriteAnimator implements ApplicationListener {
         Texture                         walkSheet;              // #4
         TextureRegion[]                 walkFrames;             // #5
         SpriteBatch                     spriteBatch;            // #6
-        TextureRegion                   currentFrame;           // #7
+        public TextureRegion                   currentFrame;           // #7
         
         float stateTime;                                        // #8
         
-        int xPos = 0;
-        int yPos = 0;
+        //public float xPos = 0;
+        //public float yPos = 0;
+        public Sprite mySprite;
 
         @Override
         public void create() {
@@ -40,6 +43,7 @@ FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);                                
                 spriteBatch = new SpriteBatch();                                // #12
                 stateTime = 0f;                                                 // #13
                 currentFrame = walkAnimation.getKeyFrame(stateTime, true); 		// prime first frame
+                mySprite = new Sprite(currentFrame);
         }
 
         @Override
@@ -47,9 +51,21 @@ FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);                                
                 //Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);                                            // #14
                 stateTime += Gdx.graphics.getDeltaTime();                       // #15
                 currentFrame = walkAnimation.getKeyFrame(stateTime, true);      // #16
+                mySprite.setTexture(currentFrame.getTexture());
                 spriteBatch.begin();
-                spriteBatch.draw(currentFrame, xPos, yPos);                         // #17
+                spriteBatch.draw(currentFrame,
+                				mySprite.getX() / Constants.WORLD_WIDTH_METERS,
+                				mySprite.getY() / Constants.WORLD_HEIGHT_METERS,
+                				currentFrame.getRegionWidth() / Constants.PIXELS_PER_METER,
+                				currentFrame.getRegionHeight() / Constants.PIXELS_PER_METER);
                 spriteBatch.end();
+                
+                //System.out.println("Txt: " + xPos * Constants.WORLD_TO_BOX + " " + yPos * Constants.WORLD_TO_BOX);
+        }
+        
+        public void setCamera(Camera camera)
+        {
+        	spriteBatch.setProjectionMatrix(camera.combined);
         }
 
 		@Override
@@ -76,9 +92,9 @@ FRAME_COLS, walkSheet.getHeight() / FRAME_ROWS);                                
 			
 		}
 		
-		public void updatePosition(int x, int y)
+		public void updatePosition(float x, float y)
 		{
-			xPos = x - (currentFrame.getRegionWidth()/2);
-			yPos = y - (currentFrame.getRegionHeight()/2);
+			mySprite.setPosition(x - (currentFrame.getRegionWidth() / Constants.PIXELS_PER_METER),
+								 y - (currentFrame.getRegionHeight() / Constants.PIXELS_PER_METER));
 		}
 }

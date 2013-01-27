@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import sun.applet.Main;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -48,6 +49,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
+import com.sun.xml.internal.stream.Entity;
 
 public class MainGame implements ApplicationListener {
 	private OrthographicCamera camera;
@@ -66,9 +68,8 @@ public class MainGame implements ApplicationListener {
     Box2DDebugRenderer debugRenderer;  
     static final float BOX_STEP=1/60f;  
     static final int BOX_VELOCITY_ITERATIONS=6;  
-    static final int BOX_POSITION_ITERATIONS=2;  
-    static final float WORLD_TO_BOX=0.01f;  
-    static final float BOX_WORLD_TO=100f;
+    static final int BOX_POSITION_ITERATIONS=2;    
+    
     private Body body;
 	
 	private static final int        FRAME_COLS = 2;         // #1
@@ -83,24 +84,44 @@ public class MainGame implements ApplicationListener {
     float stateTime;                                        // #8
 	private SpriteAnimator _spriteAnimator;
 	
-	private Vector2 _pulseVector = new Vector2(100000f, 0f);
-	private Vector2 _dragVector = new Vector2(-20000.0f, 0f);
-	private float _pulseInterval = 3.0f;
+	private Vector2 _pulseVector = new Vector2(1f, 0f);
+	private Vector2 _dragVector = new Vector2(-0.001f, 0f);
+	private float _pulseInterval = 2.0f;
 	private float _pulseTime = 3.0f;
 	private int _maxPulse;
+	private float _basePulseX = 10f;
+	private float _maxPulseDragPercent = .75f;
+	private float _dragApplied = 0.0f;
     
 	@Override
-	public void create() {		
-		_spriteAnimator = new SpriteAnimator();
-		_spriteAnimator.create();
+	public void create() {
+		//_spriteAnimator = new SpriteAnimator();
+		//_spriteAnimator.create();
+		//_spriteAnimator.updatePosition((Constants.WORLD_WIDTH_METERS + 4), //* Constants.PIXELS_PER_METER,
+		//							   (Constants.WORLD_HEIGHT_METERS + 4));// * Constants.PIXELS_PER_METER);
+		
 		GdxNativesLoader.load();
 		world = new World(new Vector2(0, 0), true);  
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
 
-		camera = new OrthographicCamera(); //(w, h);//1, h/w);
-		camera.setToOrtho(false, w, h);
+		camera = new OrthographicCamera();//(Constants.WORLD_WIDTH_METERS / 2 )* Constants.PIXELS_PER_METER,
+		camera.setToOrtho(false,
+						  Constants.WORLD_WIDTH_METERS,
+						  Constants.WORLD_HEIGHT_METERS);// / Constants.PIXELS_PER_METER);//(Constants.WORLD_HEIGHT_METERS / 2 )* Constants.PIXELS_PER_METER);
+		
+		camera.position.set(new Vector3((Constants.WORLD_WIDTH_METERS / 2),
+										(Constants.WORLD_HEIGHT_METERS / 2),
+										0.0f));
+		camera.update();//(w, h);//1, h/w);
+		
+		_spriteAnimator = new SpriteAnimator();
+		_spriteAnimator.create();
+		_spriteAnimator.setCamera(camera);
+		_spriteAnimator.updatePosition((Constants.WORLD_WIDTH_METERS),//Constants.PIXELS_PER_METER),
+									   (Constants.WORLD_HEIGHT_METERS));// * Constants.PIXELS_PER_METER);
+		//camera.setToOrtho(false, w, h);
 		batch = new SpriteBatch();
+		
+		
 		
 		//Let's try to create a player!
 		Player player1 = new Player(1, new Vector2(50,50), new Vector2(75,75));
@@ -121,6 +142,7 @@ public class MainGame implements ApplicationListener {
 		skin.add("logo", new Texture(Gdx.files.internal("textures/gui/TestButton.png")));
 		button = new TextButton("ClickMe", style);
 		
+		
 		table.add(button);
 		stage.addActor(table);
 
@@ -135,26 +157,34 @@ public class MainGame implements ApplicationListener {
 		_background = new Background();
 		
 		//Ground body  
-        BodyDef groundBodyDef =new BodyDef();  
-        groundBodyDef.position.set(new Vector2(0, 10));  
+       /* BodyDef groundBodyDef = new BodyDef();  
+        groundBodyDef.position.set(new Vector2(Constants.WORLD_WIDTH_METERS * 2, 0.0f));  
         Body groundBody = world.createBody(groundBodyDef);  
         PolygonShape groundBox = new PolygonShape();  
-        groundBox.setAsBox((camera.viewportWidth) * 2, 10.0f);  
-        groundBody.createFixture(groundBox, 0.0f);  
+        groundBox.setAsBox(Constants.WORLD_WIDTH_METERS *2, 2.0f);  
+        groundBody.createFixture(groundBox, 0.0f);  */
         //Dynamic Body  
         BodyDef bodyDef = new BodyDef();  
         bodyDef.type = BodyType.DynamicBody;  
-        bodyDef.position.set(50.0f, 400.0f);//camera.viewportWidth / 2, camera.viewportHeight / 2);  
+        bodyDef.position.set(/*Constants.WORLD_WIDTH_METERS / 2,//*/_spriteAnimator.mySprite.getX() * Constants.WORLD_TO_BOX,
+        					 /*Constants.WORLD_HEIGHT_METERS / 2); //*/_spriteAnimator.mySprite.getY() * Constants.WORLD_TO_BOX);//camera.viewportWidth / 2, camera.viewportHeight / 2);  
         body = world.createBody(bodyDef);
         CircleShape dynamicCircle = new CircleShape();  
-        dynamicCircle.setRadius(50f);  
+        dynamicCircle.setRadius(1.0f);  
         FixtureDef fixtureDef = new FixtureDef();  
         fixtureDef.shape = dynamicCircle;  
         fixtureDef.density = 0.1f;  
-        fixtureDef.friction = 1.0f;  
-        fixtureDef.restitution = 1;  
-        body.createFixture(fixtureDef);  
+        fixtureDef.friction = 0.4f;  
+        fixtureDef.restitution = 1;
+        body.createFixture(fixtureDef);
+        body.setUserData(_spriteAnimator);
+        _spriteAnimator.mySprite.setOrigin(body.getPosition().x * Constants.WORLD_TO_BOX, body.getPosition().y * Constants.WORLD_TO_BOX);
+        
+        
         debugRenderer = new Box2DDebugRenderer();
+        
+        //_spriteAnimator.updatePosition((int)(body.getPosition().x * Constants.BOX_TO_WORLD),
+        //							   (int)(body.getPosition().y * Constants.BOX_TO_WORLD));
         
         //ChainShape chainShape = new ChainShape();
         //chainShape.
@@ -170,8 +200,7 @@ public class MainGame implements ApplicationListener {
 	public void render() {		
 		Gdx.gl.glClearColor(1, 0, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		batch.setProjectionMatrix(camera.combined);
-		
+		camera.update();
 		//camera.position.set(0f, Gdx.graphics.getHeight() / 2f, 0f);
 		//camera.position.set((1 * body.getPosition().x) - 20, Gdx.graphics.getHeight() / 2, 0f);
 		//camera.position += camera.d;
@@ -179,12 +208,12 @@ public class MainGame implements ApplicationListener {
 		//if(Gdx.input.isKeyPressed(Keys.K))
 		//{
 			//camera.position.add(10.f, 0f, 0f);
-		float cameraX = camera.position.x;
+		/*float cameraX = camera.position.x;
 		
-		float minimumX = (body.getPosition().x - 50) + (Gdx.graphics.getWidth() / 2f);
-		float maximumX = body.getPosition().x + 100f;
+		float minimumX = (body.getPosition().x * BOX_WORLD_TO - 50) + (Gdx.graphics.getWidth() / 2f);
+		float maximumX = body.getPosition().x * BOX_WORLD_TO + 100f;
 		
-		if((body.getPosition().x - 50) + (Gdx.graphics.getWidth() / 2f) < camera.position.x)
+		if((body.getPosition().x * BOX_WORLD_TO - 50) + (Gdx.graphics.getWidth() / 2f) < camera.position.x)
 		{
 			cameraX = minimumX;
 		}
@@ -194,14 +223,15 @@ public class MainGame implements ApplicationListener {
 		}
 		else
 		{
-			cameraX += 10f * Gdx.graphics.getDeltaTime();
+			cameraX += 100f * Gdx.graphics.getDeltaTime();
 		}
 		
 		
 		//camera.position.set((body.getPosition().x - 50) + (Gdx.graphics.getWidth() / 2f), camera.position.y, 0f);
 		camera.position.set(cameraX, camera.position.y, 0f);
-		camera.update();
+		camera.update();*/
 	
+		
 		//Vector2 velocity = body.getLinearVelocity();
 			
 			//System.out.println("C: " + camera.position);
@@ -212,18 +242,17 @@ public class MainGame implements ApplicationListener {
 		//System.out.println("C: " + camera.position);
 		//camera.update();
 		
+		batch.setProjectionMatrix(camera.combined);
+		
 		_background.Draw(batch);
 		
 		
 		//Vector2 spritePos = body.getPosition();
-		_spriteAnimator.updatePosition((int)body.getPosition().x /*+ (Gdx.graphics.getWidth() /2)*/, (int)(body.getPosition().y));
-		_spriteAnimator.render();
 		
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 		Table.drawDebug(stage);
 		
-		debugRenderer.render(world, camera.combined);
 		//batch.draw(texture2, 0, 0);
 		//batch.draw(_background.GetBackgroundTxt(), 800/2, 20);
 
@@ -236,37 +265,47 @@ public class MainGame implements ApplicationListener {
 
 		if(Gdx.input.isKeyPressed(Keys.W))
 		{
-			//Gdx.app.log("Physics", "Applying force UP");
-			//body.applyLinearImpulse(new Vector2(0, 5000), body.getPosition());
-			Vector2 pos = body.getPosition();
-			body.setTransform(pos.x, pos.y + 100 * Gdx.graphics.getDeltaTime(), body.getAngle());
+			body.applyLinearImpulse(new Vector2(0, 0.05f), body.getPosition());
+			//camera.position.y += 1;
 		}
 		if(Gdx.input.isKeyPressed(Keys.A))
 		{
-			body.applyLinearImpulse(new Vector2(-50000, 0), body.getPosition());
+			//camera.position.x -= 1;
+			body.applyLinearImpulse(new Vector2(-0.05f, 0), body.getPosition());
 		}
 		if(Gdx.input.isKeyPressed(Keys.S))
 		{
-			Vector2 pos = body.getPosition();
-			body.setTransform(pos.x, pos.y + -100 * Gdx.graphics.getDeltaTime(), body.getAngle());
-			//body.applyLinearImpulse(new Vector2(0, -5000), body.getPosition());
+			//camera.position.y -= 1;
+			body.applyLinearImpulse(new Vector2(0, -0.05f), body.getPosition());
 		}
 		if(Gdx.input.isKeyPressed(Keys.D))
 		{
-			body.applyLinearImpulse(new Vector2(50000, 0), body.getPosition());
+			//camera.position.x += 1;
+			body.applyLinearImpulse(new Vector2(0.05f, 0), body.getPosition());
 		}
+		camera.update();
 		
 		Pulse();
 		
+		debugRenderer.render(world, camera.combined);
+		
 		// Physics
-		world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS); 
+		world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS);
+		
+		_spriteAnimator.setCamera(camera);
+		_spriteAnimator.updatePosition((body.getPosition().x * Constants.BOX_TO_WORLD),
+									   (body.getPosition().y * Constants.BOX_TO_WORLD));
+		//_spriteAnimator.mySprite.setPosition(body.getPosition().x, body.getPosition().y);
+		_spriteAnimator.render();
+		
+        System.out.println("Body: " + body.getPosition().x + " " + body.getPosition().y);
 	}
 
 	public void Pulse()
 	{
 		_pulseTime += Gdx.graphics.getDeltaTime();
 		
-		Gdx.app.debug("Pulse", "PT: " + _pulseTime);
+		//Gdx.app.debug("Pulse", "PT: " + _pulseTime);
 		//System.out.println("PT: " + _pulseTime + " " + _pulseVector);
 		if(_pulseTime > _pulseInterval)
 		{
@@ -276,25 +315,39 @@ public class MainGame implements ApplicationListener {
 			while(bodies.hasNext())
 			{
 				Body currentBody = bodies.next();
-				//Vector2 speedIncrease = currentBody.getLinearVelocity() 
+				//Vector2 speedIncrease = currentBody.getLinearVelocity()
+				//_pulseVector.add(_pulseVector);
+				//currentBody.setLinearDamping(0.0f);
+				//System.out.println(_pulseVector);
+				//System.out.println();
+				//currentBody.applyLinearImpulse(_pulseVector, currentBody.getPosition());
+				//_pulseVector.add(-1.0f * _pulseVector);
 				currentBody.applyLinearImpulse(_pulseVector, currentBody.getPosition());
+				//System.out.println("" + currentBody.getLinearVelocity());
 			}
 			
 			_pulseTime = Gdx.graphics.getDeltaTime();
+			_dragApplied = 0.0f;
 		}
-		else
-		{
-			Iterator<Body> bodies = world.getBodies();
-			while(bodies.hasNext())
-			{
-				Body currentBody = bodies.next();
-				currentBody.applyForce(_dragVector, currentBody.getPosition());
-			}
-		}
+		//else if((-1 * _dragApplied) < (_pulseVector.x * _maxPulseDragPercent))
+		//{
+		//	Iterator<Body> bodies = world.getBodies();
+		//	while(bodies.hasNext())
+		//	{
+		//		Body currentBody = bodies.next();
+		//		currentBody.applyForce(_dragVector, currentBody.getPosition());
+		//		_dragApplied = _dragApplied + _dragVector.x;
+		//	}
+		//}
 	}
 	
 	@Override
 	public void resize(int width, int height) {
+	   Vector3 oldpos = new Vector3(camera.position);
+	   camera.setToOrtho(false,
+	                      width / Constants.PIXELS_PER_METER,
+	                      height / Constants.PIXELS_PER_METER);
+	   camera.translate(oldpos.x-camera.position.x, oldpos.y-camera.position.y);
 	}
 
 	@Override
