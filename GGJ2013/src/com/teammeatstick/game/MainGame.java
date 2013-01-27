@@ -140,7 +140,10 @@ public class MainGame implements ApplicationListener {
 		
 		batch = new SpriteBatch();		
 		gameAudio = new Audio();
-
+		gameAudio.create();
+		//set the music
+		gameAudio.setMusic(Constants.HEART_BEAT_NORMAL,1.0f,true);
+		gameAudio.music.play();
 		stage = new Stage(20, 400, true);
 		Table table = new Table();
 		table.setY(200);
@@ -225,6 +228,9 @@ public class MainGame implements ApplicationListener {
 		debugRenderer.render(world, Constants.CAMERA.combined);
 		
 		if(Gdx.input.justTouched()){
+			//gameAudio.sound = Gdx.audio.newSound(Constants.COLLIDE_NANO);
+			//Gdx.audio.newSound(Constants.COLLIDE_NANO).play();
+			gameAudio.triggerSound(Constants.COLLIDE_NANO, 0.5f);
 			//gameAudio.sound.play();
 			System.out.println("playing sound?");
 		}		
