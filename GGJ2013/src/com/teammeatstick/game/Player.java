@@ -71,27 +71,25 @@ public class Player extends GameObject {
 	
 	public void draw() {
 		playerTarget.set(this.position.cpy());
-		this.position.set(playerBody.getPosition());
+		this.position.set(playerBody.getPosition().x * Constants.BOX_TO_WORLD,
+						  playerBody.getPosition().y * Constants.BOX_TO_WORLD);
 		spriteAnimator.updatePosition((int)this.position.x, (int)this.position.y);
 		spriteAnimator.render();
 	}
 	
 	public void moveUp() {
-		Vector2 pos = playerBody.getPosition();
-		playerBody.setTransform(pos.x, pos.y + 100 * Gdx.graphics.getDeltaTime(), playerBody.getAngle());
-		}
+		playerBody.applyLinearImpulse(new Vector2(0, 0.05f), playerBody.getPosition());
+	}
 	
 	public void moveLeft() {
-			playerBody.applyLinearImpulse(new Vector2(-50000, 0), playerBody.getPosition());
-		}
+		playerBody.applyLinearImpulse(new Vector2(-0.2f, 0), playerBody.getPosition());
+	}
 	
 	public void moveDown() {
-			Vector2 pos = playerBody.getPosition();
-			playerBody.setTransform(pos.x, pos.y + -100 * Gdx.graphics.getDeltaTime(), playerBody.getAngle());
-			//body.applyLinearImpulse(new Vector2(0, -5000), body.getPosition());
-		}
+		playerBody.applyLinearImpulse(new Vector2(0, -0.05f), playerBody.getPosition());
+	}
 	
 	public void moveRight() {
-			playerBody.applyLinearImpulse(new Vector2(50000, 0), playerBody.getPosition());
-		}
+		playerBody.applyLinearImpulse(new Vector2(-0.2f, 0), playerBody.getPosition());
+	}
 }
