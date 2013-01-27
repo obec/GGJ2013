@@ -70,7 +70,7 @@ public class Player extends GameObject {
 	}
 	
 	public void draw() {
-		this.playerTarget.set(this.position.cpy());
+		playerTarget.set(this.position.cpy());
 		this.position.set(playerBody.getPosition());
 		spriteAnimator.updatePosition((int)this.position.x, (int)this.position.y);
 		spriteAnimator.render();

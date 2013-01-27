@@ -1,5 +1,6 @@
 package com.teammeatstick.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -30,6 +31,8 @@ public class Baddie extends GameObject {
 
 		this.position.set(position);
 		this.direction.set(direction);
+		
+		velocity.set(1,1);
 		
 		spriteAnimator = new SpriteAnimator(2, 2, spriteSheet, 4);
 		
@@ -73,21 +76,31 @@ public class Baddie extends GameObject {
 			
 			public void move(){
 				System.out.println("Attempting to move baddies");
-				System.out.println(Player.playerTarget);
+				System.out.println("Player target is: "+Player.playerTarget);
 				
-				float arcx = Player.playerTarget.x;
-				float arcy = Player.playerTarget.y;
-			    float desiredAngle = MathUtils.atan2(arcx,arcy);
-			    System.out.println(desiredAngle);
-			    System.out.println("before fucking with Player.position");
-			    System.out.println(Player.playerTarget);
-			    Vector2 target = new Vector2();
-			    target.set(Player.playerTarget.cpy());	
-			    System.out.println("after fucking with Player.position");
-			    System.out.println(Player.playerTarget);		    
-				baddieBody.setTransform(target, desiredAngle);
+				//This is gonna be really fucking horrible but whatev
+				/*if(Player.playerTarget.x>this.position.x) {
+					this.baddieBody.applyLinearImpulse(new Vector2(20000, 0), baddieBody.getPosition());
+				}
+				if (Player.playerTarget.x < this.position.x) {
+					baddieBody.applyLinearImpulse(new Vector2(-20000, 0), baddieBody.getPosition());
+				}*/
+				if (Player.playerTarget.y > this.position.y) {
+					Vector2 pos = baddieBody.getPosition();
+					baddieBody.setTransform(pos.x, pos.y + 50 * Gdx.graphics.getDeltaTime(), baddieBody.getAngle());
+				}
+				if (Player.playerTarget.y < this.position.y) {
+					Vector2 pos = baddieBody.getPosition();
+					baddieBody.setTransform(pos.x, pos.y + -50 * Gdx.graphics.getDeltaTime(), baddieBody.getAngle());
+				}
+
 				
-				baddieBody.applyLinearImpulse(velocity, direction);
+				//float arcx = Player.playerTarget.x;
+				//float arcy = Player.playerTarget.y;
+			    //float desiredAngle = MathUtils.atan2(arcx,arcy);
+				//this.baddieBody.setTransform(Player.playerTarget, desiredAngle);
+				this.baddieBody.applyForce(velocity, direction);
+				//this.baddieBody.applyLinearImpulse(velocity, direction);
 			}
 
 }

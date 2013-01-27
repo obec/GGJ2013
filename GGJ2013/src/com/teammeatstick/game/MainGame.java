@@ -119,7 +119,7 @@ public class MainGame implements ApplicationListener {
 		//Now for some baddies!
 		baddies = new Baddie[baddieCount];
 		for (int i = 0; i < baddieCount; i++){
-			baddies[i] = new Baddie(i, new Vector2(MathUtils.random(Gdx.graphics.getWidth()),MathUtils.random(Gdx.graphics.getHeight())), new Vector2(MathUtils.random(Gdx.graphics.getWidth()),MathUtils.random(Gdx.graphics.getHeight())), world, Constants.VIRUS_SPRITE);
+			baddies[i] = new Baddie(i, new Vector2(MathUtils.random(Constants.SCREEN_WIDTH*2),Constants.SCREEN_HEIGHT), player1.position, world, Constants.VIRUS_SPRITE);
 		}
 		
 		batch = new SpriteBatch();		
@@ -319,7 +319,7 @@ public class MainGame implements ApplicationListener {
 			baddies[i].draw();
 		}
 
-		Pulse();
+		//Pulse();
 		
 		debugRenderer.render(world, Constants.CAMERA.combined);
 		
@@ -334,7 +334,7 @@ public class MainGame implements ApplicationListener {
         System.out.println("Body: " + body.getPosition().x + " " + body.getPosition().y);
 	}
 
-	public void Pulse()
+	/*public void Pulse()
 	{
 		_pulseTime += Gdx.graphics.getDeltaTime();
 		
@@ -372,7 +372,7 @@ public class MainGame implements ApplicationListener {
 		//		_dragApplied = _dragApplied + _dragVector.x;
 		//	}
 		//}
-	}
+	}*/
 	
 	@Override
 	public void resize(int width, int height) {
