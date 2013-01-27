@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
@@ -18,9 +20,19 @@ public class Background {
 	private Texture _background;
 	private Texture[] _backgroundTextures;
 	private TextureAtlas _levelAtlas;
+	float scrollTimer = 0.0f;
+	SpriteBatch spriteBatch;
+	Texture spriteTexture;
+	Sprite sprite;
 	
 	Background(){
 		LoadBackground();
+		spriteBatch = new SpriteBatch();
+	    spriteTexture = new Texture(Gdx.files.internal("textures/backgrounds/looplevel/fuzzyblood.png"));
+	                 
+	    spriteTexture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+	    sprite = new Sprite(spriteTexture, 0, 0, 800, 600);
+	    sprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
 	public void LoadBackground()
@@ -43,7 +55,7 @@ public class Background {
 	
 	public void Draw(SpriteBatch batch)
 	{
-		batch.begin();
+		/*batch.begin();
 	
 		for(int texture=0; texture<_backgroundTextures.length; texture++)
 		{
@@ -54,7 +66,18 @@ public class Background {
 					   _backgroundTextures[texture].getHeight() / Constants.PIXELS_PER_METER);
 		}
 		
-		batch.end();
+		batch.end();*/
+		
+		scrollTimer+=Gdx.graphics.getDeltaTime() / 4;
+	     if(scrollTimer>1.0f)
+	         scrollTimer = 0.0f;
+	                
+	     sprite.setU(scrollTimer);
+	     sprite.setU2(scrollTimer+1);
+	                
+	     spriteBatch.begin();
+	     sprite.draw(spriteBatch);
+	     spriteBatch.end();
 	}
 	
 	public Texture GetBackgroundTxt()
