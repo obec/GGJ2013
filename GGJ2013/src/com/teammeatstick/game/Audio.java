@@ -15,10 +15,10 @@ public class Audio implements ContactListener {
 	public Music music;
 	
 	public void create() {
-		//sound = Gdx.audio.newSound(Constants.COLLIDE_NANO);
+		sound = Gdx.audio.newSound(Constants.COLLIDE_NANO);
 		
-		//music = Gdx.audio.newMusic(Constants.HEART_BEAT_NORMAL);
-		//music.play();
+		music = Gdx.audio.newMusic(Constants.HEART_BEAT_NORMAL);
+		music.play();
 	}
 	public void setMusic(FileHandle musicFile, float musicVolume, boolean shouldLoop) {
 		music = Gdx.audio.newMusic(musicFile);
