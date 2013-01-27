@@ -41,6 +41,7 @@ public class Baddie extends GameObject {
 
 				// Create our body in the world using our body definition
 				baddieBody = world.createBody(bodyDef);
+				baddieBody.setUserData(this);
 				
 				//our sprites are squares, no need to get anything else here
 				float radius = spriteAnimator.currentFrame.getRegionWidth() * Constants.WORLD_TO_BOX;
@@ -65,8 +66,8 @@ public class Baddie extends GameObject {
 			}
 			
 			public void draw() {
-				this.position.set(baddieBody.getPosition().x * Constants.PIXELS_PER_METER,
-						          baddieBody.getPosition().y * Constants.PIXELS_PER_METER);
+				this.position.set(baddieBody.getPosition().x,
+						          baddieBody.getPosition().y);
 				spriteAnimator.updatePosition(this.position.x, this.position.y);
 				spriteAnimator.render();
 			}
@@ -83,8 +84,7 @@ public class Baddie extends GameObject {
 					baddieBody.applyLinearImpulse(new Vector2(-20000, 0), baddieBody.getPosition());
 				}*/
 				if (Player.playerTarget.y > this.position.y) {
-					Vector2 pos = baddieBody.getPosition();
-					baddieBody.setTransform(pos.x, pos.y + 50 * Gdx.graphics.getDeltaTime(), baddieBody.getAngle());
+					baddieBody.applyLinearImpulse(new Vector2(-0.02f, 0.0f), baddieBody.getPosition());
 				}
 				if (Player.playerTarget.y < this.position.y) {
 					Vector2 pos = baddieBody.getPosition();

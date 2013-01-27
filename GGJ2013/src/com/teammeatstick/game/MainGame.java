@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Animator;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -88,12 +89,16 @@ public class MainGame implements ApplicationListener {
 	
 	private Player player1;
 	private Baddie[] baddies;
-	private int baddieCount = 5;		
+	private int baddieCount = 5;
+	
+	private CollisionHandler _collisionHandler;
     
 	@Override
 	public void create() {
 		GdxNativesLoader.load();
-		world = new World(new Vector2(0, 0), true);  
+		world = new World(new Vector2(0, 0), true); 
+		_collisionHandler = new CollisionHandler();
+		world.setContactListener(_collisionHandler);
 
 		Constants.CAMERA.setToOrtho(false,
 						  Constants.WORLD_WIDTH_METERS,
@@ -104,7 +109,7 @@ public class MainGame implements ApplicationListener {
 										0.0f));
 		Constants.CAMERA.update();//(w, h);//1, h/w);
 		
-		_spriteAnimator = new SpriteAnimator(2, 2, "textures/sprites/VirusSprite.png", 4);
+		_spriteAnimator = new SpriteAnimator(2, 2, Constants.VIRUS_PLAYER, 4);
 		_spriteAnimator.create();
 		_spriteAnimator.updatePosition((Constants.WORLD_WIDTH_METERS),//Constants.PIXELS_PER_METER),
 									   (Constants.WORLD_HEIGHT_METERS));// * Constants.PIXELS_PER_METER);
@@ -179,7 +184,8 @@ public class MainGame implements ApplicationListener {
         					 _spriteAnimator.mySprite.getY() * Constants.WORLD_TO_BOX);
         
         body = world.createBody(bodyDef);
-        CircleShape dynamicCircle = new CircleShape();  
+        body.setUserData(_spriteAnimator.mySprite);
+        CircleShape dynamicCircle = new CircleShape();
         dynamicCircle.setRadius(1.0f);  
         FixtureDef fixtureDef = new FixtureDef();  
         fixtureDef.shape = dynamicCircle;  
@@ -202,12 +208,16 @@ public class MainGame implements ApplicationListener {
 	}
 
 	@Override
-	public void render() {		
+	public void render() {
 		Gdx.gl.glClearColor(1, 0, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS);
+		debugRenderer.render(world, Constants.CAMERA.combined);
+		
 		Constants.CAMERA.update();
 		
-		batch.setProjectionMatrix(Constants.CAMERA.combined);
+		//batch.setProjectionMatrix(Constants.CAMERA.combined);
 		
 		_background.Draw(batch);
 		
@@ -271,16 +281,19 @@ public class MainGame implements ApplicationListener {
 
 		Pulse();
 		
-		debugRenderer.render(world, Constants.CAMERA.combined);
-		
 		// Physics
-		world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS);
+		
 		
 		_spriteAnimator.updatePosition((body.getPosition().x * Constants.BOX_TO_WORLD),
 									   (body.getPosition().y * Constants.BOX_TO_WORLD));
 		//_spriteAnimator.mySprite.setPosition(body.getPosition().x, body.getPosition().y);
 		_spriteAnimator.render();
 		
+		Constants.CAMERA.update();
+		
+		//world.step(BOX_STEP, BOX_VELOCITY_ITERATIONS, BOX_POSITION_ITERATIONS);
+		//Matrix4 cameraCopy = Constants.CAMERA.combined.cpy();
+		//debugRenderer.render(world, Constants.CAMERA.combined);//cameraCopy.scl(Constants.BOX_TO_WORLD));
         //System.out.println("Body: " + body.getPosition().x + " " + body.getPosition().y);
 	}
 

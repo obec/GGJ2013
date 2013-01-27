@@ -1,6 +1,7 @@
 package com.teammeatstick.game;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -16,7 +17,7 @@ public class SpriteAnimator implements ApplicationListener {
         private int			FRAME_COLS;
         private int			FRAME_ROWS;
         private float		FRAMES_PER_SECOND;
-        private String		filePath;
+        private FileHandle	fileHandle;
         
         Animation			spriteAnimation;
         Texture				spriteSheet;
@@ -28,17 +29,25 @@ public class SpriteAnimator implements ApplicationListener {
         
         public Sprite mySprite;
 
+        public SpriteAnimator(int col, int row, FileHandle relativeFileHandlePath, int framesPerSecond) {
+        	FRAME_COLS = col;
+        	FRAME_ROWS = row;
+        	fileHandle = relativeFileHandlePath;
+        	FRAMES_PER_SECOND = framesPerSecond;
+        	this.create();
+        }
+        
         public SpriteAnimator(int col, int row, String relativeFilePath, int framesPerSecond) {
         	FRAME_COLS = col;
         	FRAME_ROWS = row;
-        	filePath = relativeFilePath;
+        	fileHandle = Gdx.files.internal(relativeFilePath);
         	FRAMES_PER_SECOND = framesPerSecond;
         	this.create();
         }
         
         @Override
         public void create() {
-                spriteSheet = new Texture(Gdx.files.internal(filePath));
+                spriteSheet = new Texture(fileHandle);
                 TextureRegion[][] tmp = TextureRegion.split(spriteSheet, spriteSheet.getWidth() / FRAME_COLS, spriteSheet.getHeight() / FRAME_ROWS);
                 spriteFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
                 int index = 0;
@@ -64,8 +73,8 @@ public class SpriteAnimator implements ApplicationListener {
                 spriteBatch.setProjectionMatrix(Constants.CAMERA.combined);
                 spriteBatch.begin();
                 spriteBatch.draw(currentFrame,
-                				mySprite.getX() / Constants.WORLD_WIDTH_METERS,
-                				mySprite.getY() / Constants.WORLD_HEIGHT_METERS,
+                				mySprite.getX(),
+                				mySprite.getY(),
                 				currentFrame.getRegionWidth() / Constants.PIXELS_PER_METER,
                 				currentFrame.getRegionHeight() / Constants.PIXELS_PER_METER);
                 spriteBatch.end();
@@ -104,7 +113,7 @@ public class SpriteAnimator implements ApplicationListener {
 		
 		public void updatePosition(float x, float y)
 		{
-			mySprite.setPosition(x - (currentFrame.getRegionWidth() / Constants.PIXELS_PER_METER),
-								 y - (currentFrame.getRegionHeight() / Constants.PIXELS_PER_METER));
+			mySprite.setPosition(x - ((currentFrame.getRegionWidth() / Constants.PIXELS_PER_METER) / 2),
+								 y - ((currentFrame.getRegionHeight() / Constants.PIXELS_PER_METER) /2));
 		}
 }

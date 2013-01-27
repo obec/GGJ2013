@@ -22,6 +22,25 @@ public class Constants {
 	public static final FileHandle MENU_SELECTION = Gdx.files.internal("sounds/effects/menu_select.mp3");
 	public static final FileHandle MENU_MOVE = Gdx.files.internal("sounds/effects/menu_move.mp3");
 	
+	// Background resources
+	public static final FileHandle BLOOD_BACKGROUND = Gdx.files.internal("textures/backgrounds/looplevel/fuzzyBlood.png");
+	
+	// Player resources
+	public static final FileHandle VIRUS_PLAYER = Gdx.files.internal("textures/sprites/VirusSprite.png");
+	public static final FileHandle FLU_PLAYER = Gdx.files.internal("textures/sprites/FluSprite.png");
+	public static final FileHandle NANOBOT_PLAYER = Gdx.files.internal("textures/sprites/NanobotSprite.png");
+	
+	// Pickup resources
+	public static final FileHandle SPEED_UP_PICKUP = Gdx.files.internal("textures/sprites/pickups/UpArrowPickup.png");
+	public static final FileHandle SPEED_DOWN_PICKUP = Gdx.files.internal("textures/sprites/pickups/DownArrowPickup.png");
+	public static final FileHandle GROW_PICKUP = Gdx.files.internal("textures/sprites/pickups/GrowArrowPickup.png");
+	public static final FileHandle RED_BLOOD_CELL_PICKUP = Gdx.files.internal("textures/sprites/pickups/RedBloodCellPickup.png");
+	public static final FileHandle WHITE_BLOOD_CELL_PICKUP = Gdx.files.internal("textures/sprites/pickups/MacrophagePickup.png");
+	public static final FileHandle EVIL_BLOOD_PICKUP = Gdx.files.internal("textures/sprites/pickups/EvilBloodPickup.png");
+	public static final FileHandle BIOHAZARD_PICKUP = Gdx.files.internal("textures/sprites/pickups/BiohazardPickup.png");
+	public static final FileHandle IRON_PICKUP = Gdx.files.internal("textures/sprites/pickups/ironPickup.png");
+	
+	// World parameters
 	public static final float SCREEN_WIDTH = Gdx.graphics.getWidth();
 	public static final float SCREEN_HEIGHT = Gdx.graphics.getHeight();
 	public static final float PIXELS_PER_METER = 16.0f;
@@ -30,6 +49,7 @@ public class Constants {
     public static final float WORLD_TO_BOX = 0.01f;  
     public static final float BOX_TO_WORLD = 100.0f;
 	public static final int SCALE_FACTOR = 10;
+	
 	//what else? die? victory? menu selections?
 
 	//Camera
