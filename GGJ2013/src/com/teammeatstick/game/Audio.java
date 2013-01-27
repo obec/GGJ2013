@@ -38,7 +38,7 @@ public class Audio implements ContactListener {
 
 	@Override
 	public void beginContact(Contact contact) {
-		// TODO Auto-generated method stub
+		sound.play();
 		
 	}
 
