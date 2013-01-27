@@ -18,7 +18,12 @@ public class Constants {
 	public static final String VIRUS_VICTORY = "sounds/effects/Virus_win.mp3";
 	public static final String MENU_SELECTION = "sounds/effects/menu_select.mp3";
 	public static final String MENU_MOVE = "sounds/effects/menu_move.mp3";
+	
+	//Camera
 	public static final OrthographicCamera CAMERA = new OrthographicCamera();  //(w, h);//1, h/w);
-	//what else? die? victory? menu selections?
+	
+	//Sprites
+	public static final String VIRUS_SPRITE = "textures/sprites/VirusSprite.png";
+	
 
 }

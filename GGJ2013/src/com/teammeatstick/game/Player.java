@@ -1,5 +1,7 @@
 package com.teammeatstick.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -16,19 +18,23 @@ public class Player extends GameObject {
 	public Vector2 velocity = new Vector2();
 	public Vector2 direction = new Vector2();
 	
-	public int hitPoints = 0;
+	public Body body;
 	
-	//need to add sprite stuff
-	
-	//constructor for player object
-	public Player(int id, float delta, Vector2 position, Vector2 direction, World world) {
+	public int hitPoints = 100;
+	public SpriteAnimator spriteAnimator;
 		
-		super(id, position, direction, world);
+	//constructor for player object
+	public Player(int id, float delta, Vector2 position, Vector2 direction, World world, String spriteSheet) {
+		
+		super(id, position, direction, world, spriteSheet);
 		
 		this.id = id;
 
 		this.position.set(position);
 		this.direction.set(direction);
+		
+		spriteAnimator = new SpriteAnimator(2, 2, spriteSheet, 4);
+		
 		
 		// Create a box2d body def
 		BodyDef bodyDef = new BodyDef();
@@ -38,11 +44,15 @@ public class Player extends GameObject {
 		bodyDef.position.set(this.position);
 
 		// Create our body in the world using our body definition
-		Body body = world.createBody(bodyDef);
-
-		// Create a circle shape and set its radius to 6
+		body = world.createBody(bodyDef);
+		
+		//our sprites are squares, no need to get anything else here
+		float radius = spriteAnimator.currentFrame.getRegionWidth();
+		//convert from pixels to box2d shiz
+		radius *= 0.01;
+		// Create a circle shape and set its radius to the equivalent sprite width
 	    CircleShape circle = new CircleShape();
-		circle.setRadius(60f);
+		circle.setRadius(radius);
 
 		// Create a fixture definition to apply our shape to
 		FixtureDef fixtureDef = new FixtureDef();
@@ -55,17 +65,37 @@ public class Player extends GameObject {
 		Fixture fixture = body.createFixture(fixtureDef);
 	    Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
-
-		// Remember to dispose of any shapes after you're done with them!
-		// BodyDef and FixtureDef don't need disposing, but shapes do.
 		circle.dispose();
 	}
 	
 	public void draw() {
-		
+		this.position.set(body.getPosition());
+		spriteAnimator.updatePosition((int)this.position.x, (int)this.position.y);
+		spriteAnimator.render();
 	}
 	
 	public void move(){
 		
+		if(Gdx.input.isKeyPressed(Keys.W))
+		{
+			//Gdx.app.log("Physics", "Applying force UP");
+			//body.applyLinearImpulse(new Vector2(0, 5000), body.getPosition());
+			Vector2 pos = body.getPosition();
+			body.setTransform(pos.x, pos.y + 100 * Gdx.graphics.getDeltaTime(), body.getAngle());
+		}
+		if(Gdx.input.isKeyPressed(Keys.A))
+		{
+			body.applyLinearImpulse(new Vector2(-50000, 0), body.getPosition());
+		}
+		if(Gdx.input.isKeyPressed(Keys.S))
+		{
+			Vector2 pos = body.getPosition();
+			body.setTransform(pos.x, pos.y + -100 * Gdx.graphics.getDeltaTime(), body.getAngle());
+			//body.applyLinearImpulse(new Vector2(0, -5000), body.getPosition());
+		}
+		if(Gdx.input.isKeyPressed(Keys.D))
+		{
+			body.applyLinearImpulse(new Vector2(50000, 0), body.getPosition());
+		}
 	}
 }

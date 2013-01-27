@@ -79,10 +79,12 @@ public class MainGame implements ApplicationListener {
 	private float _pulseTime = 3.0f;
 	private int _maxPulse;
 	private Rectangle glViewport;
+	
+	Player player1;
     
 	@Override
 	public void create() {
-		_spriteAnimator = new SpriteAnimator(2, 2, "textures/sprites/VirusSprite.png", 4);
+		//
 		GdxNativesLoader.load();
 		world = new World(new Vector2(0, 0), true);  
 		float w = Gdx.graphics.getWidth();
@@ -92,7 +94,7 @@ public class MainGame implements ApplicationListener {
 		batch = new SpriteBatch();
 		
 		//Let's try to create a player!
-		Player player1 = new Player(1, 1.0f, new Vector2(50,50), new Vector2(75,75), world);
+		player1 = new Player(1, 1.0f, new Vector2(50,50), new Vector2(75,75), world, Constants.VIRUS_SPRITE);
 		
 		batch = new SpriteBatch();		
 		gameAudio = new Audio();
@@ -112,7 +114,7 @@ public class MainGame implements ApplicationListener {
 		
 		table.add(button);
 		stage.addActor(table);
-
+		
 		//(Drawable) new Texture(Gdx.files.internal("textures/gui/TestButton.png")
 
 		
@@ -243,8 +245,10 @@ public class MainGame implements ApplicationListener {
 			body.applyLinearImpulse(new Vector2(50000, 0), body.getPosition());
 		}
 		
-		_spriteAnimator.updatePosition((int)body.getPosition().x, (int)body.getPosition().y);
-		_spriteAnimator.render();
+		player1.draw();
+		
+		//_spriteAnimator.updatePosition((int)body.getPosition().x, (int)body.getPosition().y);
+		//_spriteAnimator.render();
 		
 		Pulse();
 		

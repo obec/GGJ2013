@@ -19,7 +19,7 @@ public class GameObject {
 	//need to add sprite stuff
 	
 	//constructor for vanilla object
-	public GameObject(int id, Vector2 position, Vector2 direction, World world) {
+	public GameObject(int id, Vector2 position, Vector2 direction, World world, String spriteSheet) {
 		super();
 		
 		this.id = id;
