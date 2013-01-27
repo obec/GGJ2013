@@ -69,8 +69,8 @@ public class Baddie extends GameObject {
 			}
 			
 			public void draw() {
-				this.position.set(baddieBody.getPosition().x * Constants.PIXELS_PER_METER,
-						          baddieBody.getPosition().y * Constants.PIXELS_PER_METER);
+				this.position.set(baddieBody.getPosition().x,
+						          baddieBody.getPosition().y);
 				spriteAnimator.updatePosition(this.position.x, this.position.y);
 				spriteAnimator.render();
 			}
