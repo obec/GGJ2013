@@ -31,7 +31,7 @@ public class Player extends GameObject {
 		this.position.set(position);
 		this.direction.set(direction);
 		
-		spriteAnimator = new SpriteAnimator(2, 2, spriteSheet, 4);
+		spriteAnimator = new SpriteAnimator(3, 1, spriteSheet, 4);
 		
 		
 		// Create a box2d body def

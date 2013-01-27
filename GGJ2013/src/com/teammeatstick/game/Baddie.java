@@ -73,17 +73,6 @@ public class Baddie extends GameObject {
 			}
 			
 			public void move(){
-				//System.out.println("Attempting to move baddies");
-				//System.out.println("Player target is: "+Player.playerTarget);
-				//This is gonna be really fucking horrible but whatev
-				/*if(Player.playerTarget.x>this.position.x) {
-					this.baddieBody.applyLinearImpulse(new Vector2(20000, 0), baddieBody.getPosition());
-				}
-				if (Player.playerTarget.x < this.position.x) {
-					baddieBody.applyLinearImpulse(new Vector2(-20000, 0), baddieBody.getPosition());
-				}*/
-				
-				//System.out.println(Player.playerTarget);
 				
 				Vector2 targetVector = new Vector2(Player.playerTarget.x - baddieBody.getPosition().x,
 												   Player.playerTarget.y - baddieBody.getPosition().y);
@@ -95,6 +84,9 @@ public class Baddie extends GameObject {
 			    //float desiredAngle = MathUtils.atan2(arcx,arcy);
 				//this.baddieBody.setTransform(Player.playerTarget, desiredAngle);
 				//this.baddieBody.applyForce(velocity, direction);
+
+				// THIS ONE WORKS this.baddieBody.applyForce(velocity, direction);
+
 				//this.baddieBody.applyLinearImpulse(velocity, direction);
 			}
 

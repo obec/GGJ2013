@@ -116,7 +116,7 @@ public class MainGame implements ApplicationListener {
 								         Constants.WORLD_HEIGHT_METERS/2),
 						     new Vector2(75,75),
 						     world,
-						     Constants.VIRUS_SPRITE);
+						     Constants.NANOBOT_SPRITE);
 		
 		//Now for some baddies!
 		baddies = new Baddie[baddieCount];

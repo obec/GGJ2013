@@ -57,4 +57,5 @@ public class Constants {
 	
 	//Sprites
 	public static final String VIRUS_SPRITE = "textures/sprites/VirusSprite.png";
+	public static final String NANOBOT_SPRITE = "textures/sprites/NanobotSprite.png";
 }
