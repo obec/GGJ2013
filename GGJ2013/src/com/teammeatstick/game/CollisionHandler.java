@@ -25,6 +25,7 @@ public class CollisionHandler implements ContactListener{
 			if(objectB instanceof Baddie)
 			{
 				System.out.println("Player hit baddie");
+				((Player) objectA).collidedWithBaddie();
 			}
 		}
 		//if(Player.class == contact.getFixtureA().getClass())

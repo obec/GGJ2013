@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 public class Player extends GameObject {
 	
 	public static Vector2 playerTarget = new Vector2();
+	public CollisionHandler collisionHandler = new CollisionHandler();
 
 	public Body playerBody;
 	
@@ -73,6 +74,11 @@ public class Player extends GameObject {
 						  playerBody.getPosition().y);// * Constants.BOX_TO_WORLD);
 		spriteAnimator.updatePosition(this.position.x, this.position.y);
 		spriteAnimator.render();
+	}
+	
+	public void collidedWithBaddie() {
+		this.hitPoints-=5;
+		this.audio.triggerSound(Constants.COLLIDE_NANO, 1);
 	}
 	
 	public void moveUp() {
