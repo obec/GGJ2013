@@ -90,6 +90,6 @@ public class Player extends GameObject {
 	}
 	
 	public void moveRight() {
-		playerBody.applyLinearImpulse(new Vector2(-0.2f, 0), playerBody.getPosition());
+		playerBody.applyLinearImpulse(new Vector2(0.2f, 0), playerBody.getPosition());
 	}
 }

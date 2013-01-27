@@ -69,14 +69,15 @@ public class Baddie extends GameObject {
 			}
 			
 			public void draw() {
-				this.position.set(baddieBody.getPosition());
+				this.position.set(baddieBody.getPosition().x * Constants.PIXELS_PER_METER,
+						          baddieBody.getPosition().y * Constants.PIXELS_PER_METER);
 				spriteAnimator.updatePosition((int)this.position.x, (int)this.position.y);
 				spriteAnimator.render();
 			}
 			
 			public void move(){
-				System.out.println("Attempting to move baddies");
-				System.out.println("Player target is: "+Player.playerTarget);
+				//System.out.println("Attempting to move baddies");
+				//System.out.println("Player target is: "+Player.playerTarget);
 				
 				//This is gonna be really fucking horrible but whatev
 				/*if(Player.playerTarget.x>this.position.x) {
