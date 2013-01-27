@@ -14,10 +14,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Baddie extends GameObject {
 
-	public Vector2 position = new Vector2();
-	public Vector2 velocity = new Vector2();
-	public Vector2 direction = new Vector2();
-	
 	public Body baddieBody;
 	
 	public int hitPoints = 5;
@@ -32,7 +28,7 @@ public class Baddie extends GameObject {
 		this.position.set(position);
 		this.direction.set(direction);
 		
-		velocity.set(1,1);
+		this.velocity.set(1f,1f);
 		
 		spriteAnimator = new SpriteAnimator(2, 2, spriteSheet, 4);
 		

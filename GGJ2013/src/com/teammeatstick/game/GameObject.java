@@ -8,10 +8,12 @@ public class GameObject {
 	//position and direction vectors
 	public Vector2 position = new Vector2();
 	public Vector2 direction = new Vector2();
+	public Vector2 velocity = new Vector2();
+	public Audio audio = new Audio();
 	
-	//velocty and delta floats for calculating pos 
-	protected float velocity = 1.0f;
-	protected float delta = 1.0f;	
+	//velocity and delta floats for calculating pos 
+
+	public float delta = 1.0f;	
 	
 	//object ID
 	public int id = 0;
@@ -25,8 +27,10 @@ public class GameObject {
 		this.id = id;
 		this.position.set(position);
 		this.direction.set(direction);
+		this.audio.create();
 		
 	}
+
 	
 	public void draw() {
 		//draw the sprite at position()

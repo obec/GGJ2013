@@ -15,10 +15,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 public class Player extends GameObject {
 	
 	public static Vector2 playerTarget = new Vector2();
-	public Vector2 position = new Vector2();
-	public Vector2 velocity = new Vector2();
-	public Vector2 direction = new Vector2();
-	
+
 	public Body playerBody;
 	
 	public int hitPoints = 100;
