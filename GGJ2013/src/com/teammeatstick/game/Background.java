@@ -28,7 +28,7 @@ public class Background {
 	Background(){
 		LoadBackground();
 		spriteBatch = new SpriteBatch();
-	    spriteTexture = new Texture(Gdx.files.internal("textures/backgrounds/looplevel/fuzzyblood.png"));
+	    spriteTexture = new Texture(Constants.BLOOD_BACKGROUND);
 	                 
 	    spriteTexture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 	    sprite = new Sprite(spriteTexture, 0, 0, 800, 600);
@@ -68,7 +68,7 @@ public class Background {
 		
 		batch.end();*/
 		
-		scrollTimer+=Gdx.graphics.getDeltaTime() / 4;
+		scrollTimer+=Gdx.graphics.getDeltaTime() / 16;
 	     if(scrollTimer>1.0f)
 	         scrollTimer = 0.0f;
 	                

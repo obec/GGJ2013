@@ -109,7 +109,7 @@ public class MainGame implements ApplicationListener {
 										0.0f));
 		Constants.CAMERA.update();//(w, h);//1, h/w);
 		
-		_spriteAnimator = new SpriteAnimator(2, 2, "textures/sprites/VirusSprite.png", 4);
+		_spriteAnimator = new SpriteAnimator(2, 2, Constants.VIRUS_PLAYER, 4);
 		_spriteAnimator.create();
 		_spriteAnimator.updatePosition((Constants.WORLD_WIDTH_METERS),//Constants.PIXELS_PER_METER),
 									   (Constants.WORLD_HEIGHT_METERS));// * Constants.PIXELS_PER_METER);
