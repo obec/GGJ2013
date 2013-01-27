@@ -92,7 +92,7 @@ public class MainGame implements ApplicationListener {
 		batch = new SpriteBatch();
 		
 		//Let's try to create a player!
-		Player player1 = new Player(1, new Vector2(50,50), new Vector2(75,75));
+		Player player1 = new Player(1, 1.0f, new Vector2(50,50), new Vector2(75,75), world);
 		
 		batch = new SpriteBatch();		
 		gameAudio = new Audio();
