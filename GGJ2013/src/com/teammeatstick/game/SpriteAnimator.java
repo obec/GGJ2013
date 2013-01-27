@@ -2,6 +2,7 @@ package com.teammeatstick.game;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -55,30 +56,31 @@ public class SpriteAnimator implements ApplicationListener {
         public void render() {
                 stateTime += Gdx.graphics.getDeltaTime();
                 currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
+                spriteBatch.setProjectionMatrix(Constants.CAMERA.combined);
                 spriteBatch.begin();
                 spriteBatch.draw(currentFrame, xPos, yPos);
                 spriteBatch.end();
         }
 
-		@Override
+        @Override
 		public void resize(int width, int height) {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+        @Override
 		public void pause() {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+        @Override
 		public void resume() {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
+        @Override
 		public void dispose() {
 			// TODO Auto-generated method stub
 			
