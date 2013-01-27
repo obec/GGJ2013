@@ -64,8 +64,8 @@ public class SpriteAnimator implements ApplicationListener {
                 spriteBatch.setProjectionMatrix(Constants.CAMERA.combined);
                 spriteBatch.begin();
                 spriteBatch.draw(currentFrame,
-                				mySprite.getX() / Constants.WORLD_WIDTH_METERS,
-                				mySprite.getY() / Constants.WORLD_HEIGHT_METERS,
+                				mySprite.getX(),
+                				mySprite.getY(),
                 				currentFrame.getRegionWidth() / Constants.PIXELS_PER_METER,
                 				currentFrame.getRegionHeight() / Constants.PIXELS_PER_METER);
                 spriteBatch.end();

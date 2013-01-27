@@ -29,6 +29,7 @@ public class Constants {
     public static final float WORLD_TO_BOX = 0.01f;  
     public static final float BOX_TO_WORLD = 100.0f;
 	public static final int SCALE_FACTOR = 10;
+	
 	//what else? die? victory? menu selections?
 
 	//Camera
