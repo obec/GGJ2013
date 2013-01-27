@@ -47,7 +47,11 @@ public class Background {
 	
 		for(int texture=0; texture<_backgroundTextures.length; texture++)
 		{
-			batch.draw(_backgroundTextures[texture], texture * _backgroundTextures[texture].getWidth(), 0f);
+			batch.draw(_backgroundTextures[texture],
+					   texture * (_backgroundTextures[texture].getWidth() / Constants.PIXELS_PER_METER),
+					   0f,
+					   _backgroundTextures[texture].getWidth() / Constants.PIXELS_PER_METER,
+					   _backgroundTextures[texture].getHeight() / Constants.PIXELS_PER_METER);
 		}
 		
 		batch.end();

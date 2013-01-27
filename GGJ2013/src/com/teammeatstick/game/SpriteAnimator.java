@@ -1,10 +1,12 @@
 package com.teammeatstick.game;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -24,8 +26,7 @@ public class SpriteAnimator implements ApplicationListener {
         
         float stateTime;
         
-        int xPos = 0;
-        int yPos = 0;
+        public Sprite mySprite;
 
         public SpriteAnimator(int col, int row, String relativeFilePath, int framesPerSecond) {
         	FRAME_COLS = col;
@@ -46,20 +47,35 @@ public class SpriteAnimator implements ApplicationListener {
                                 spriteFrames[index++] = tmp[i][j];
                         }
                 }
-                spriteAnimation = new Animation(1/FRAMES_PER_SECOND, spriteFrames);
-                spriteBatch = new SpriteBatch();
-                stateTime = 0f;
-                currentFrame = spriteAnimation.getKeyFrame(stateTime, true); 		// prime first frame
+                
+                spriteAnimation = new Animation(0.025f, spriteFrames);           
+                spriteBatch = new SpriteBatch();                                
+                stateTime = 0f;                                                 
+                currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
+                mySprite = new Sprite(currentFrame);
         }
 
         @Override
         public void render() {
-                stateTime += Gdx.graphics.getDeltaTime();
-                currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
+                //Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);                                            // #14
+                stateTime += Gdx.graphics.getDeltaTime();                       // #15
+                currentFrame = spriteAnimation.getKeyFrame(stateTime, true);      // #16
+                mySprite.setTexture(currentFrame.getTexture());
                 spriteBatch.setProjectionMatrix(Constants.CAMERA.combined);
                 spriteBatch.begin();
-                spriteBatch.draw(currentFrame, xPos, yPos);
+                spriteBatch.draw(currentFrame,
+                				mySprite.getX() / Constants.WORLD_WIDTH_METERS,
+                				mySprite.getY() / Constants.WORLD_HEIGHT_METERS,
+                				currentFrame.getRegionWidth() / Constants.PIXELS_PER_METER,
+                				currentFrame.getRegionHeight() / Constants.PIXELS_PER_METER);
                 spriteBatch.end();
+                
+                //System.out.println("Txt: " + xPos * Constants.WORLD_TO_BOX + " " + yPos * Constants.WORLD_TO_BOX);
+        }
+        
+        public void setCamera(Camera camera)
+        {
+        	spriteBatch.setProjectionMatrix(camera.combined);
         }
 
         @Override
@@ -86,9 +102,9 @@ public class SpriteAnimator implements ApplicationListener {
 			
 		}
 		
-		public void updatePosition(int x, int y)
+		public void updatePosition(float x, float y)
 		{
-			xPos = x - (currentFrame.getRegionWidth()/2);
-			yPos = y - (currentFrame.getRegionHeight()/2);
+			mySprite.setPosition(x - (currentFrame.getRegionWidth() / Constants.PIXELS_PER_METER),
+								 y - (currentFrame.getRegionHeight() / Constants.PIXELS_PER_METER));
 		}
 }
