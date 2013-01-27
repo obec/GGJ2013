@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 
-public class SpriteAnimator {
+public class SpriteAnimator implements ApplicationListener {
 
         private int			FRAME_COLS;
         private int			FRAME_ROWS;
@@ -35,6 +35,7 @@ public class SpriteAnimator {
         	this.create();
         }
         
+        @Override
         public void create() {
                 spriteSheet = new Texture(Gdx.files.internal(filePath));
                 TextureRegion[][] tmp = TextureRegion.split(spriteSheet, spriteSheet.getWidth() / FRAME_COLS, spriteSheet.getHeight() / FRAME_ROWS);
@@ -51,30 +52,35 @@ public class SpriteAnimator {
                 currentFrame = spriteAnimation.getKeyFrame(stateTime, true); 		// prime first frame
         }
 
-        public void render(OrthographicCamera camera) {
+        @Override
+        public void render() {
                 stateTime += Gdx.graphics.getDeltaTime();
                 currentFrame = spriteAnimation.getKeyFrame(stateTime, true);
-                spriteBatch.setProjectionMatrix(camera.combined);
+                spriteBatch.setProjectionMatrix(Constants.CAMERA.combined);
                 spriteBatch.begin();
                 spriteBatch.draw(currentFrame, xPos, yPos);
                 spriteBatch.end();
         }
 
+        @Override
 		public void resize(int width, int height) {
 			// TODO Auto-generated method stub
 			
 		}
 
+        @Override
 		public void pause() {
 			// TODO Auto-generated method stub
 			
 		}
 
+        @Override
 		public void resume() {
 			// TODO Auto-generated method stub
 			
 		}
 
+        @Override
 		public void dispose() {
 			// TODO Auto-generated method stub
 			

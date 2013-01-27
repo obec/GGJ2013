@@ -1,5 +1,7 @@
 package com.teammeatstick.game;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
+
 public class Constants {
 	//Audio resources
 	public static final String HEART_BEAT_NORMAL = "sounds/effects/heart_beat_normal.mp3";
@@ -16,6 +18,7 @@ public class Constants {
 	public static final String VIRUS_VICTORY = "";
 	public static final String MENU_SELECTION = "sounds/effects/menu_select.mp3";
 	public static final String MENU_MOVE = "sounds/effects/menu_move.mp3";
+	public static final OrthographicCamera CAMERA = new OrthographicCamera();  //(w, h);//1, h/w);
 	//what else? die? victory? menu selections?
 
 }
